@@ -1,5 +1,6 @@
 package com.salah.flightservice.controller;
 
+import com.salah.flightservice.dto.FlightResponseDto;
 import com.salah.flightservice.model.Flight;
 import com.salah.flightservice.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,8 @@ public class FlightController {
     }
 
     @GetMapping("/search")
-    public List<Flight> searchFlights(@RequestParam(required = false) String departureCity , @RequestParam(required = false) String arrivalCity, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        return flightService.searchFlights(departureCity, arrivalCity, date);
+    public List<FlightResponseDto> searchFlights(@RequestParam(required = false) String departureCity , @RequestParam(required = false) String arrivalCity, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam(required = false) Integer seats) {
+        return flightService.searchFlights(departureCity, arrivalCity, date,seats);
     }
 //
 //    @GetMapping("/{id}")
