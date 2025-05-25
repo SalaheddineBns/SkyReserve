@@ -26,6 +26,20 @@ SkyReserve follows a microservices architecture and includes the following servi
 | `AccountingService` | Invoice and financial management                      |
 | `IdentityService`   | User authentication and account management            |
 
+
+---
+## 📡 API Endpoints
+### 🎛️ FlightService - Flight Management & Search
+
+| Method   | Endpoint                      | Description                                                 | Parameters                                                                                      |
+|----------|-------------------------------|-------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| `GET`    | `/flights`                    | Retrieve all available flights                              | —                                                                                               |
+| `GET`    | `/flights/search`             | Search flights by origin, destination, date, and passengers  | `departureCity` (opt), `arrivalCity` (opt), `date` (opt, ISO format), `numberOfPassengers` (opt) |
+| `GET`    | `/flights/{id}`               | Get details of a specific flight by ID                       | `id` (required, Long)                                                                           |
+| `GET`    | `/flights/{id}/price`         | Get the price of a specific flight by ID                     | `id` (required, Long)                                                                           |
+<br>
+✅ Les données dynamiques comme le nombre de sièges disponibles (availableSeats) sont récupérées depuis le InventoryService via un appel interne dans le FlightService.
+
 ---
 
 ## 🚀 How to Run

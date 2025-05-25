@@ -27,8 +27,18 @@ public class FlightController {
     }
 
     @GetMapping("/search")
-    public List<FlightResponseDto> searchFlights(@RequestParam(required = false) String departureCity , @RequestParam(required = false) String arrivalCity, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam(required = false) Integer seats) {
-        return flightService.searchFlights(departureCity, arrivalCity, date,seats);
+    public List<FlightResponseDto> searchFlights(@RequestParam(required = false) String departureCity , @RequestParam(required = false) String arrivalCity, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam(required = false) Integer numberOfPassengers) {
+        return flightService.searchFlights(departureCity, arrivalCity, date,numberOfPassengers);
+    }
+
+    @GetMapping("/{id}")
+    public Flight getFlightById(@RequestParam Long id) {
+        return flightService.getFlights().stream().filter(flight -> flight.getFlightId().equals(id)).findFirst().orElse(null);
+    }
+
+    @GetMapping("/{id}/price")
+    public Double getPriceByFlightId(@RequestParam Long id) {
+        return flightService.getFlights().stream().filter(flight -> flight.getFlightId().equals(id)).findFirst().map(Flight::getPrice).orElse(null);
     }
 //
 //    @GetMapping("/{id}")
