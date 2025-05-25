@@ -16,7 +16,6 @@ public interface InventoryClient {
                                @RequestParam("seats") int seats);
     @GetMapping("/api/inventory/available-seats")
     Integer getAvailableSeats(
-            @RequestParam("flightId") Long flightId,
-            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+            @RequestParam("flightId") Long flightId
     );
 }

@@ -39,8 +39,8 @@ public class FlightService {
 //           return new FlightResponseDto(flight,isAvailable);
 //       }).collect(Collectors.toList());
 //    }
-    // search by returning all available seats
-    public List<FlightResponseDto> searchFlights(String origin, String destination, LocalDate date, Integer seats) {
+//     search by returning all available seats
+    public List<FlightResponseDto> searchFlights(String origin, String destination, LocalDate date, Integer numberOfPassengers) {
         LocalDateTime start = null, end = null;
         if (date != null) {
             start = date.atStartOfDay();
@@ -54,15 +54,15 @@ public class FlightService {
                     Integer availableSeats = null;
 
                     // Si la date est spécifiée, on récupère la dispo des sièges
-                    if (date != null) {
-                        availableSeats = inventoryClient.getAvailableSeats(flight.getFlightId(), date);
-                    }
+
+                        availableSeats = inventoryClient.getAvailableSeats(flight.getFlightId());
+
 
                     // Vérifier les sièges seulement si "seats" demandé ET dispo connue
                     boolean hasEnoughSeats = true;
-                    if (seats != null) {
+                    if (numberOfPassengers != null) {
                         // Si on ne connaît pas la dispo, on exclut ce vol (hasEnoughSeats = false)
-                        hasEnoughSeats = (availableSeats != null) && (availableSeats >= seats);
+                        hasEnoughSeats = (availableSeats != null) && (availableSeats >= numberOfPassengers);
                     }
 
                     // Si la recherche est valide, retourner le vol

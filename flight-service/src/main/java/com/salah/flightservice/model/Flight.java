@@ -30,6 +30,7 @@ public class Flight {
     @Column(nullable = false)
     private LocalDateTime arrivalTime;
 
+    //prix de siege
     @Column(nullable = false)
     private Double price;
 
