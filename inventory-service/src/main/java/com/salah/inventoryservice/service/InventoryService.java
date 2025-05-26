@@ -28,10 +28,16 @@ public class InventoryService {
         return inventoryRepository.save(inventory);
     }
 
+
     public List<Inventory> getAllInventory(){
         return inventoryRepository.findAll();
     }
 
+    public Integer getAvailableSeats(Long flightId) {
+        return inventoryRepository.findByFlightId(flightId)
+                .map(Inventory::getAvailableSeats)
+                .orElse(0);
+    }
 
     public boolean checkAvailability(Long flightId, LocalDate flightDate, int seatsRequested) {
         return inventoryRepository.findByFlightIdAndFlightDate(flightId, flightDate)

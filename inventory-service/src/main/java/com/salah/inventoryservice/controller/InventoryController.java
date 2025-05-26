@@ -25,6 +25,8 @@ public class InventoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+
+
     @GetMapping
     public ResponseEntity<List<Inventory>> getInventory(){
         return ResponseEntity.ok(inventoryService.getAllInventory());
@@ -39,6 +41,13 @@ public class InventoryController {
         boolean available = inventoryService.checkAvailability(flightId, date, seats);
         return ResponseEntity.ok(available);
     }
+    @GetMapping("available-seats")
+    public Integer getAvailableSeats(
+            @RequestParam Long flightId
+    ) {
+        return inventoryService.getAvailableSeats(flightId);
+    }
+
 
     @PostMapping("/reserve")
     public ResponseEntity<String> reserveSeats(@RequestParam Long flightId,
