@@ -4,8 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
+/**
+ * Représente l'inventaire des sièges disponibles pour un vol donné.
+ *
+ * Chaque Inventory est lié à un vol spécifique (via flightId) et gère le nombre
+ * total de sièges encore disponibles (nbrOfAvailableSeats).
+ *
+ * La gestion des sièges spécifiques (numéros, classes, etc.) se fait dans une entité distincte (Seat).
+ */
 @Entity
 @Table(name = "inventory")
 @Data
@@ -14,43 +20,38 @@ public class Inventory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long inventoryId;
 
+    @Column(nullable = false)
     private Long flightId;
-//Un même vol (par exemple AF123) peut exister tous les jours (vol régulier).
-//👉 Donc flightId identifie le vol, mais flightDate précise pour quel jour on veut vérifier ou gérer les sièges.
-    private LocalDate flightDate;
 
-    private int totalSeats;
+    private int nbrOfAvailableSeats;
 
-    private int availableSeats;
-
-    //private LocalDateTime lastUpdated;
-
-    public Inventory(Long flightId, LocalDate flightDate, int totalSeats) {
+    public Inventory(Long flightId, int totalSeats) {
         this.flightId = flightId;
-        this.flightDate = flightDate;
-        this.totalSeats = totalSeats;
-        this.availableSeats = totalSeats;
-        //this.lastUpdated = LocalDateTime.now();
+        this.nbrOfAvailableSeats = totalSeats;
     }
 
-
-    // Logic to reserve or release seats
+    /**
+     * Réserve un nombre de sièges spécifié si des places sont disponibles.
+     *
+     * @param seatsRequested Nombre de sièges à réserver
+     * @return true si la réservation est acceptée, false sinon
+     */
     public boolean reserveSeats(int seatsRequested) {
-        if (availableSeats >= seatsRequested) {
-            availableSeats -= seatsRequested;
-            //lastUpdated = LocalDateTime.now();
+        if (nbrOfAvailableSeats >= seatsRequested) {
+            nbrOfAvailableSeats -= seatsRequested;
             return true;
         }
         return false;
     }
 
+    /**
+     * Libère un nombre de sièges spécifié (par exemple en cas d'annulation).
+     *
+     * @param seatsReleased Nombre de sièges à libérer
+     */
     public void releaseSeats(int seatsReleased) {
-        availableSeats += seatsReleased;
-        if (availableSeats > totalSeats) {
-            availableSeats = totalSeats;
-        }
-        //lastUpdated = LocalDateTime.now();
+        nbrOfAvailableSeats += seatsReleased;
     }
 }

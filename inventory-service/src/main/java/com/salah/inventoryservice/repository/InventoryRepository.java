@@ -8,8 +8,7 @@ import java.util.Optional;
 
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
-    //for handling the null check with a good way
-    Optional<Inventory> findByFlightIdAndFlightDate(Long flightId, LocalDate flightDate);
+    // for handling the null check with a good way Optional<Inventory> findByFlightIdAndFlightDate(Long flightId, LocalDate flightDate);
     Optional<Inventory> findByFlightId(Long flightId);
 
 }
