@@ -1,0 +1,58 @@
+package com.salah.baggageservice.service;
+
+import com.salah.baggageservice.dto.BaggageRequestDto;
+import com.salah.baggageservice.dto.BaggageResponseDto;
+import com.salah.baggageservice.mapper.BaggageMapper;
+import com.salah.baggageservice.model.Baggage;
+import com.salah.baggageservice.model.enums.BaggageStatus;
+import com.salah.baggageservice.model.enums.BaggageType;
+import com.salah.baggageservice.repository.BaggageRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class BaggageService {
+    @Autowired
+    private BaggageRepository baggageRepository;
+    @Autowired
+    private BaggageMapper baggageMapper;
+
+    public BaggageResponseDto reserveBaggage(BaggageRequestDto requestDto) {
+        BaggageType type = requestDto.getType(); // Assure-toi que getType() retourne bien un BaggageType
+
+        // Vérification
+        if (type == null) {
+            throw new IllegalArgumentException("Baggage type is required");
+        }
+
+        // Création du bagage avec poids et prix par défaut
+        Baggage baggage = Baggage.builder()
+                .bookingId(requestDto.getBookingId())
+                .type(type)
+                .weight(type.getMaxWeight())
+                .price(type.getPrice())
+                .status(BaggageStatus.RESERVED)
+                .build();
+
+        Baggage saved = baggageRepository.save(baggage);
+        return baggageMapper.toDto(saved);
+    }
+
+    public List<BaggageResponseDto> getBaggagesByBookingId(Long bookingId) {
+        return baggageRepository.findAllByBookingId(bookingId).stream()
+                .map(baggageMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public BaggageResponseDto checkInBaggage(Long baggageId) {
+        Baggage baggage = baggageRepository.findById(baggageId)
+                .orElseThrow(() -> new IllegalArgumentException("Baggage not found"));
+        baggage.setStatus(BaggageStatus.CHECKED_IN);
+        Baggage updated = baggageRepository.save(baggage);
+        return baggageMapper.toDto(updated);
+    }
+}

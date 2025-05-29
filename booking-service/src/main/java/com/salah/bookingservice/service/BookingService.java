@@ -1,5 +1,6 @@
 package com.salah.bookingservice.service;
 
+import com.salah.bookingservice.client.BaggageClient;
 import com.salah.bookingservice.client.FlightClient;
 import com.salah.bookingservice.client.InventoryClient;
 import com.salah.bookingservice.dto.*;
@@ -24,16 +25,16 @@ public class BookingService {
     private FlightClient flightClient;
 
     @Autowired
-    private InventoryClient inventoryClient; // Appelle le service Inventory
+    private InventoryClient inventoryClient;
 
-//    @Autowired
-//    private BaggageClient baggageClient; // Appelle le service Baggage
+    @Autowired
+    private BaggageClient baggageClient;
 
     @Autowired
     private BookingMapper bookingMapper;
 
     @Autowired
-    private PriceCalculator priceCalculator; // Ton calculateur de prix
+    private PriceCalculator priceCalculator;
 
     public BookingResponseDto createBooking(BookingRequestDto request) {
         // 1️⃣ Vérifier le vol (FlightService)
@@ -48,17 +49,11 @@ public class BookingService {
             throw new IllegalArgumentException("Not enough seats available");
         }
 
-        // 3️⃣ Gérer les bagages (BaggageService)
-//        if (request.baggageOptions() != null && !request.baggageOptions().isEmpty()) {
-//            baggageClient.reserveBaggage(request.flightId(), request.userId(), request.baggageOptions());
-//        }
-
-        // 4️⃣ Calculer le prix total (siège + bagages)
-        double totalPrice = priceCalculator.calculateTotalPrice(flight, request.seats(), request.baggageOptions());
-
-        // 5️⃣ Créer le booking en base (status = PENDING)
+        // 3️⃣ Créer le booking en base (status = PENDING)
         Booking booking = bookingMapper.toEntity(request);
-        booking.setTotalPrice(totalPrice);
+        booking.setTotalPrice(
+                priceCalculator.calculateTotalPrice(flight, request.seats(), request.baggageOptions())
+        );
         booking.setBookingDate(LocalDateTime.now());
         booking.setExpirationDate(LocalDateTime.now().plusMinutes(10)); // ⏳ Expire dans 10 min
         booking.setStatus("PENDING");
@@ -70,14 +65,30 @@ public class BookingService {
         booking.setPhone(userInfo.phone());
         booking.setCivility(userInfo.civility());
 
-        Booking saved = bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.save(booking);
 
-        // 6️⃣ (Optionnel) Réserver les sièges après succès
+        // 4️⃣ Gérer les bagages (BaggageService)
+        if (request.baggageOptions() != null && !request.baggageOptions().isEmpty()) {
+            for (BaggageOption option : request.baggageOptions()) {
+                for (int i = 0; i < option.quantity(); i++) {
+                    BaggageRequestDto baggageRequest = new BaggageRequestDto();
+                    baggageRequest.setBookingId(savedBooking.getBookingId());
+                    baggageRequest.setType(option.type()); // car BaggageRequestDto utilise String pour le type
+                    // Pas de poids ni de prix ici car pas fourni dans BookingRequestDto, à calculer côté BaggageService si besoin
+
+                    baggageClient.reserveBaggage(baggageRequest);
+                }
+            }
+        }
+
+
+
+        // 5️⃣ Réserver les sièges après succès
         SeatReservationRequestDto seatRequest = new SeatReservationRequestDto(request.flightId(), request.seats());
         inventoryClient.reserveSeats(seatRequest);
 
-        // 7️⃣ Retourner le résultat
-        return bookingMapper.toDto(saved);
+        // 6️⃣ Retourner le résultat
+        return bookingMapper.toDto(savedBooking);
     }
 
     public List<BookingResponseDto> getAllBookings() {

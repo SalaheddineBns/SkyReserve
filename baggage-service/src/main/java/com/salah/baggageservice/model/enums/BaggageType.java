@@ -1,4 +1,4 @@
-package com.salah.bookingservice.model.enums;
+package com.salah.baggageservice.model.enums;
 
 public enum BaggageType {
     CABIN(10.0, 30.0),   // maxWeight = 10kg, price = 30€
