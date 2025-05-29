@@ -1,6 +1,6 @@
 package com.salah.bookingservice.controller;
 
-import com.salah.bookingservice.dto.BookingDto;
+import com.salah.bookingservice.dto.BookingResponseDto;
 import com.salah.bookingservice.dto.BookingRequestDto;
 import com.salah.bookingservice.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,14 @@ public class BookingController {
 
     // Créer une réservation
     @PostMapping
-    public ResponseEntity<BookingDto> createBooking(@RequestBody BookingRequestDto bookingRequest) {
-        BookingDto bookingDto = bookingService.createBooking(bookingRequest);
+    public ResponseEntity<BookingResponseDto> createBooking(@RequestBody BookingRequestDto bookingRequest) {
+        BookingResponseDto bookingDto = bookingService.createBooking(bookingRequest);
         return ResponseEntity.status(201).body(bookingDto); // 201 CREATED
     }
 
     // Récupérer toutes les réservations
     @GetMapping
-    public ResponseEntity<List<BookingDto>> getAllBookings() {
+    public ResponseEntity<List<BookingResponseDto>> getAllBookings() {
         return ResponseEntity.ok(bookingService.getAllBookings());
     }
 }

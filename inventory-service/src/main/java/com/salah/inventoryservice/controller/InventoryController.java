@@ -1,6 +1,8 @@
 package com.salah.inventoryservice.controller;
 
 import com.salah.inventoryservice.dto.InventoryRequestDto;
+import com.salah.inventoryservice.dto.SeatReleaseRequestDto;
+import com.salah.inventoryservice.dto.SeatReservationRequestDto;
 import com.salah.inventoryservice.model.Inventory;
 import com.salah.inventoryservice.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,37 +74,24 @@ public class InventoryController {
         return ResponseEntity.ok(availableSeats);
     }
 
-    /**
-     * Réserve un nombre de sièges pour un vol donné.
-     *
-     * @param flightId       Identifiant du vol
-     * @param seatsRequested Nombre de sièges à réserver
-     * @return Message de confirmation ou d'erreur
-     */
+
     @PostMapping("/reserve")
     public ResponseEntity<String> reserveSeats(
-            @RequestParam Long flightId,
-            @RequestParam int seatsRequested
+            @RequestBody SeatReservationRequestDto request
+
     ) {
-        boolean reserved = inventoryService.reserveSeats(flightId, seatsRequested);
+        boolean reserved = inventoryService.reserveSeats(request.flightId(), request.seats());
         return reserved ?
                 ResponseEntity.ok("Seats reserved") :
                 ResponseEntity.badRequest().body("Not enough seats available");
     }
 
-    /**
-     * Libère un nombre de sièges pour un vol donné.
-     *
-     * @param flightId Identifiant du vol
-     * @param seats    Nombre de sièges à libérer
-     * @return Message de confirmation
-     */
+
     @PostMapping("/release")
     public ResponseEntity<String> releaseSeats(
-            @RequestParam Long flightId,
-            @RequestParam int seats
-    ) {
-        inventoryService.releaseSeats(flightId, seats);
+            @RequestBody SeatReleaseRequestDto request
+            ) {
+        inventoryService.releaseSeats(request.flightId(), request.seats());
         return ResponseEntity.ok("Seats released");
     }
 }

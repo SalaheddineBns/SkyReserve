@@ -4,7 +4,8 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
-public record FlightDto (   Long flightId,
+public record FlightDto (
+        Long flightId,
         String departureCity,
         String arrivalCity,
         LocalDate departureDate,
