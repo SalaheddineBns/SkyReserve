@@ -1,0 +1,10 @@
+/Users/salaheddinebenkhanous/Desktop/SkyReserve/baggage-service/src/main/java/com/salah/baggageservice/BaggageServiceApplication.java
+/Users/salaheddinebenkhanous/Desktop/SkyReserve/baggage-service/src/main/java/com/salah/baggageservice/controller/BaggageController.java
+/Users/salaheddinebenkhanous/Desktop/SkyReserve/baggage-service/src/main/java/com/salah/baggageservice/dto/BaggageRequestDto.java
+/Users/salaheddinebenkhanous/Desktop/SkyReserve/baggage-service/src/main/java/com/salah/baggageservice/dto/BaggageResponseDto.java
+/Users/salaheddinebenkhanous/Desktop/SkyReserve/baggage-service/src/main/java/com/salah/baggageservice/mapper/BaggageMapper.java
+/Users/salaheddinebenkhanous/Desktop/SkyReserve/baggage-service/src/main/java/com/salah/baggageservice/model/Baggage.java
+/Users/salaheddinebenkhanous/Desktop/SkyReserve/baggage-service/src/main/java/com/salah/baggageservice/model/enums/BaggageStatus.java
+/Users/salaheddinebenkhanous/Desktop/SkyReserve/baggage-service/src/main/java/com/salah/baggageservice/model/enums/BaggageType.java
+/Users/salaheddinebenkhanous/Desktop/SkyReserve/baggage-service/src/main/java/com/salah/baggageservice/repository/BaggageRepository.java
+/Users/salaheddinebenkhanous/Desktop/SkyReserve/baggage-service/src/main/java/com/salah/baggageservice/service/BaggageService.java

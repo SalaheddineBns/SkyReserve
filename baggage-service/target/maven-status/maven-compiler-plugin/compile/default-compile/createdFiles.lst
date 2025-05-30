@@ -1,0 +1,11 @@
+com/salah/baggageservice/dto/BaggageResponseDto.class
+com/salah/baggageservice/BaggageServiceApplication.class
+com/salah/baggageservice/controller/BaggageController.class
+com/salah/baggageservice/model/Baggage.class
+com/salah/baggageservice/service/BaggageService.class
+com/salah/baggageservice/model/Baggage$BaggageBuilder.class
+com/salah/baggageservice/mapper/BaggageMapper.class
+com/salah/baggageservice/model/enums/BaggageStatus.class
+com/salah/baggageservice/dto/BaggageRequestDto.class
+com/salah/baggageservice/model/enums/BaggageType.class
+com/salah/baggageservice/repository/BaggageRepository.class
