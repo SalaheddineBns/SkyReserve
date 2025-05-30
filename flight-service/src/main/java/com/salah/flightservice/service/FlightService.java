@@ -82,6 +82,7 @@ public class FlightService {
 
                         return FlightResponseDto.builder()
                                 .flightId(flight.getFlightId())
+                                .flightNumber(flight.getFlightNumber())
                                 .departureCity(flight.getOrigin())
                                 .arrivalCity(flight.getDestination())
                                 .departureDate(flight.getDepartureTime().toLocalDate())
