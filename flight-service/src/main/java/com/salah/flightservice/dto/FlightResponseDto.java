@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class FlightResponseDto {
     private Long flightId;
+    private String flightNumber;
     private String departureCity;
     private String arrivalCity;
     private LocalDate departureDate;
