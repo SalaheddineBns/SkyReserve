@@ -1,6 +1,8 @@
 package com.salah.flightservice.service;
 
+import com.salah.flightservice.client.AircraftClient;
 import com.salah.flightservice.client.InventoryClient;
+import com.salah.flightservice.dto.AircraftDto;
 import com.salah.flightservice.dto.FlightResponseDto;
 import com.salah.flightservice.model.Flight;
 import com.salah.flightservice.repository.FlightRepository;
@@ -21,6 +23,10 @@ public class FlightService {
     FlightRepository flightRepository;
     @Autowired
     private InventoryClient inventoryClient;
+
+    @Autowired
+    private AircraftClient aircraftClient;
+
 
     public List<Flight> getFlights() {
         return flightRepository.findAll();
@@ -65,8 +71,26 @@ public class FlightService {
                         hasEnoughSeats = (availableSeats != null) && (availableSeats >= numberOfPassengers);
                     }
 
-                    // Si la recherche est valide, retourner le vol
-                    return hasEnoughSeats ? new FlightResponseDto(flight, availableSeats) : null;
+                    if (hasEnoughSeats) {
+                        AircraftDto aircraft = null;
+                        try {
+                            aircraft = aircraftClient.getAircraftById(flight.getAircraftId());
+
+                        } catch (Exception e) {
+                            System.out.println("Aircraft not found for flight: " + flight.getFlightId());
+                        }
+
+                        return FlightResponseDto.builder()
+                                .flightId(flight.getFlightId())
+                                .departureCity(flight.getOrigin())
+                                .arrivalCity(flight.getDestination())
+                                .departureDate(flight.getDepartureTime().toLocalDate())
+                                .price(flight.getPrice())
+                                .availableSeats(availableSeats)
+                                .aircraft(aircraft)  // Objets de FeignClient
+                                .build();
+                    }
+                    return null;
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
