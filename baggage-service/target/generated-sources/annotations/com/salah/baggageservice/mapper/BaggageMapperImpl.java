@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-29T17:17:55+0200",
+    date = "2025-05-30T21:34:32+0200",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
@@ -20,14 +20,9 @@ public class BaggageMapperImpl implements BaggageMapper {
             return null;
         }
 
-        Baggage.BaggageBuilder baggage = Baggage.builder();
+        Baggage baggage = new Baggage();
 
-        baggage.bookingId( requestDto.getBookingId() );
-        baggage.type( requestDto.getType() );
-        baggage.weight( requestDto.getWeight() );
-        baggage.price( requestDto.getPrice() );
-
-        return baggage.build();
+        return baggage;
     }
 
     @Override
@@ -37,13 +32,6 @@ public class BaggageMapperImpl implements BaggageMapper {
         }
 
         BaggageResponseDto baggageResponseDto = new BaggageResponseDto();
-
-        baggageResponseDto.setId( baggage.getId() );
-        baggageResponseDto.setBookingId( baggage.getBookingId() );
-        baggageResponseDto.setType( baggage.getType() );
-        baggageResponseDto.setWeight( baggage.getWeight() );
-        baggageResponseDto.setPrice( baggage.getPrice() );
-        baggageResponseDto.setStatus( baggage.getStatus() );
 
         return baggageResponseDto;
     }

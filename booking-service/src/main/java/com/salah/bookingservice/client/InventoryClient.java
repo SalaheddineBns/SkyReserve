@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-@FeignClient(name = "inventory-service",url = "http://localhost:8081/api/inventory/")
+@FeignClient(name = "inventory-service",url = "http://localhost:8082/api/inventory/")
 public interface InventoryClient {
 
     @GetMapping("check")

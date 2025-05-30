@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "baggage-service", url = "http://localhost:8084/api/baggages")
+@FeignClient(name = "baggage-service", url = "http://localhost:8086/api/baggages")
 public interface BaggageClient {
 
     @PostMapping("/reserve")
