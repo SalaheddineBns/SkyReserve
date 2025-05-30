@@ -27,7 +27,7 @@ SkyReserve follows a microservices architecture and includes the following servi
 | `NotificationService`| Send emails/SMS notifications to users               | 8088  |
 | `AccountingService` | Invoice and financial management                      | 8089  |
 | `IdentityService`   | User authentication and account management            | 8090 ---
-## 🔌 Ports des Services
+## 🔌 Ports des Services of our project
 
 Pour faciliter le développement local et les tests, chaque service écoute sur un port spécifique:
 
