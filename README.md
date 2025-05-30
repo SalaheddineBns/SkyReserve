@@ -10,7 +10,8 @@ SkyReserve follows a microservices architecture and includes the following servi
 
 ![img.png](img.png)
 
-![img_1.png](img_1.png)
+![img_3.png](img_3.png)
+
 | Service             | Description                                           |
 |---------------------|-------------------------------------------------------|
 | `ApiGateway`        | Entry point for all requests, routes to services      |
