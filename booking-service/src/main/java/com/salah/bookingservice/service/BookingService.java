@@ -52,36 +52,42 @@ public class BookingService {
         // 3️⃣ Créer le booking en base (status = PENDING)
         Booking booking = bookingMapper.toEntity(request);
         booking.setTotalPrice(
-                priceCalculator.calculateTotalPrice(flight, request.seats(), request.baggageOptions())
+                priceCalculator.calculateTotalPrice(flight, request.seats(), null) // Plus de baggageOptions global
         );
         booking.setBookingDate(LocalDateTime.now());
         booking.setExpirationDate(LocalDateTime.now().plusMinutes(10)); // ⏳ Expire dans 10 min
         booking.setStatus("PENDING");
 
-        UserInfoDto userInfo = request.userInfos();
-        booking.setFirstName(userInfo.firstName());
-        booking.setLastName(userInfo.lastName());
-        booking.setEmail(userInfo.email());
-        booking.setPhone(userInfo.phone());
-        booking.setCivility(userInfo.civility());
+        // 🧑‍✈️ Ajouter le premier passager comme info principale (optionnel)
+        if (request.passengers() != null && !request.passengers().isEmpty()) {
+            PassengerDto mainPassenger = request.passengers().get(0);
+            booking.setFirstName(mainPassenger.firstName());
+            booking.setLastName(mainPassenger.lastName());
+            booking.setEmail(mainPassenger.email());
+            booking.setPhone(mainPassenger.phone());
+            booking.setCivility(mainPassenger.civilite());
+        }
 
         Booking savedBooking = bookingRepository.save(booking);
 
-        // 4️⃣ Gérer les bagages (BaggageService)
-        if (request.baggageOptions() != null && !request.baggageOptions().isEmpty()) {
-            for (BaggageOption option : request.baggageOptions()) {
-                for (int i = 0; i < option.quantity(); i++) {
-                    BaggageRequestDto baggageRequest = new BaggageRequestDto();
-                    baggageRequest.setBookingId(savedBooking.getBookingId());
-                    baggageRequest.setType(option.type()); // car BaggageRequestDto utilise String pour le type
-                    // Pas de poids ni de prix ici car pas fourni dans BookingRequestDto, à calculer côté BaggageService si besoin
-
-                    baggageClient.reserveBaggage(baggageRequest);
+        // 4️⃣ Gérer les bagages de chaque passager
+        if (request.passengers() != null && !request.passengers().isEmpty()) {
+            for (PassengerDto passenger : request.passengers()) {
+                if (passenger.baggageOptions() != null) {
+                    for (BaggageOption option : passenger.baggageOptions()) {
+                        for (int i = 0; i < option.quantity(); i++) {
+                            BaggageRequestDto baggageRequest = new BaggageRequestDto(
+                                    savedBooking.getBookingId(),
+                                    option.type(),
+                                    null, // poids optionnel
+                                    null  // prix optionnel
+                            );
+                            baggageClient.reserveBaggage(baggageRequest);
+                        }
+                    }
                 }
             }
         }
-
-
 
         // 5️⃣ Réserver les sièges après succès
         SeatReservationRequestDto seatRequest = new SeatReservationRequestDto(request.flightId(), request.seats());
