@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import com.salah.flightservice.dto.AircraftDto;
+
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -34,14 +37,19 @@ public class Flight {
     @Column(nullable = false)
     private Double price;
 
+    //conserver id d'avion
+    @Column(nullable = false)
+    private Long aircraftId;
+
     @Builder
-    Flight(String flightNumber, String origin, String destination, LocalDateTime departureTime, LocalDateTime arrivalTime, Double price) {
+    Flight(String flightNumber, String origin, String destination, LocalDateTime departureTime, LocalDateTime arrivalTime, Double price, Long aircraftId) {
         this.flightNumber = flightNumber;
         this.origin = origin;
         this.destination = destination;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.price = price;
+        this.aircraftId = aircraftId;
     }
 
 }
