@@ -14,7 +14,7 @@ public class PaymentMapper {
         return Payment.builder()
                 .bookingId(request.bookingId())
                 .amount(request.amount())
-                .status(PaymentStatus.PENDING)
+                .status(PaymentStatus.COMPLETED)
                 .build();
     }
 
