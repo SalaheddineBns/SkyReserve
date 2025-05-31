@@ -25,7 +25,9 @@ public class PriceCalculator {
      */
     public double calculateTotalPrice(FlightDto flight, int seats, List<BaggageOption> baggages) {
         double seatPrice = calculateSeatPrice(flight.price(), seats);
+        System.out.println(seatPrice);
         double baggageFees = calculateBaggageFees(baggages);
+        System.out.println(baggageFees);
         return seatPrice + baggageFees;
     }
 
@@ -67,8 +69,8 @@ public class PriceCalculator {
 
         // Tarification fixe par type de bagage (exemple)
         switch (baggageOption.type()) {
-            case SOUTE -> unitPrice = 30.0;
-            case CABIN -> unitPrice = 0.0;
+            case SOUTE -> unitPrice = 40;
+            case CABIN -> unitPrice = 25;
             default -> unitPrice = 0.0;
         }
 

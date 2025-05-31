@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-
+import java.time.LocalTime;
 
 @Data
 @Builder
@@ -15,9 +15,11 @@ import java.time.LocalDate;
 public class FlightResponseDto {
     private Long flightId;
     private String flightNumber;
-    private String departureCity;
-    private String arrivalCity;
+    private String origin;
+    private String destination;
     private LocalDate departureDate;
+    private LocalTime departureTime; // 🕒 Heure de départ
+    private LocalTime arrivalTime;   // 🕒 Heure d'arrivée
     private Double price;
     private Integer availableSeats;
     private AircraftDto aircraft;

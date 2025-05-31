@@ -24,8 +24,8 @@ public class FlightController {
     }
 
     @GetMapping("/search")
-    public List<FlightResponseDto> searchFlights(@RequestParam(required = false) String departureCity , @RequestParam(required = false) String arrivalCity, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam(required = false) Integer numberOfPassengers) {
-        return flightService.searchFlights(departureCity, arrivalCity, date,numberOfPassengers);
+    public List<FlightResponseDto> searchFlights(@RequestParam(required = false) String origin , @RequestParam(required = false) String arrivalCity, @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam(required = false) Integer numberOfPassengers) {
+        return flightService.searchFlights(origin, arrivalCity, date,numberOfPassengers);
     }
 
     @GetMapping("/{id}")

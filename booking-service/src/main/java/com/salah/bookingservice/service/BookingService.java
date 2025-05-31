@@ -51,9 +51,17 @@ public class BookingService {
 
         // 3️⃣ Créer le booking en base (status = PENDING)
         Booking booking = bookingMapper.toEntity(request);
+        // 1️⃣ Récupérer tous les bagages de tous les passagers en une seule liste
+        List<BaggageOption> allBaggageOptions = request.passengers().stream()
+                .filter(passenger -> passenger.baggageOptions() != null)
+                .flatMap(passenger -> passenger.baggageOptions().stream())
+                .collect(Collectors.toList());
+
+// 2️⃣ Appeler le calcul du prix avec ces bagages
         booking.setTotalPrice(
-                priceCalculator.calculateTotalPrice(flight, request.seats(), null) // Plus de baggageOptions global
+                priceCalculator.calculateTotalPrice(flight, request.seats(), allBaggageOptions)
         );
+
         booking.setBookingDate(LocalDateTime.now());
         booking.setExpirationDate(LocalDateTime.now().plusMinutes(10)); // ⏳ Expire dans 10 min
         booking.setStatus("PENDING");

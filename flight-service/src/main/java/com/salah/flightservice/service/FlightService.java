@@ -32,20 +32,7 @@ public class FlightService {
         return flightRepository.findAll();
     }
 
-    // search by seats ?
-//    public List<FlightResponseDto> searchFlightsBySeats(String origin, String destination, LocalDate date, Integer seats) {
-//        LocalDateTime start=null, end=null;
-//        if(date!=null) {
-//            start=date.atStartOfDay();
-//            end=start.plusDays(1);
-//        }
-//       List<Flight> flights=flightRepository.searchFlights(origin, destination, start, end);
-//       return flights.stream().map(flight -> {
-//           boolean isAvailable=seats !=null ? inventoryClient.checkAvailability(flight.getFlightId(),date,seats):true;
-//           return new FlightResponseDto(flight,isAvailable);
-//       }).collect(Collectors.toList());
-//    }
-//     search by returning all available seats
+
     public List<FlightResponseDto> searchFlights(String origin, String destination, LocalDate date, Integer numberOfPassengers) {
         LocalDateTime start = null, end = null;
         if (date != null) {
@@ -53,45 +40,37 @@ public class FlightService {
             end = start.plusDays(1);
         }
 
+        System.out.println(origin + " " + destination + " " + start + " " + end + " $$$$$$$$$$");
+
         List<Flight> flights = flightRepository.searchFlights(origin, destination, start, end);
 
         return flights.stream()
                 .map(flight -> {
-                    Integer availableSeats = null;
+                    Integer availableSeats = inventoryClient.getAvailableSeats(flight.getFlightId());
 
-                    // Si la date est spécifiée, on récupère la dispo des sièges
-
-                        availableSeats = inventoryClient.getAvailableSeats(flight.getFlightId());
-
-
-                    // Vérifier les sièges seulement si "seats" demandé ET dispo connue
-                    boolean hasEnoughSeats = true;
-                    if (numberOfPassengers != null) {
-                        // Si on ne connaît pas la dispo, on exclut ce vol (hasEnoughSeats = false)
-                        hasEnoughSeats = (availableSeats != null) && (availableSeats >= numberOfPassengers);
+                    if (numberOfPassengers != null && (availableSeats == null || availableSeats < numberOfPassengers)) {
+                        return null; // Pas assez de sièges
                     }
 
-                    if (hasEnoughSeats) {
-                        AircraftDto aircraft = null;
-                        try {
-                            aircraft = aircraftClient.getAircraftById(flight.getAircraftId());
-
-                        } catch (Exception e) {
-                            System.out.println("Aircraft not found for flight: " + flight.getFlightId());
-                        }
-
-                        return FlightResponseDto.builder()
-                                .flightId(flight.getFlightId())
-                                .flightNumber(flight.getFlightNumber())
-                                .departureCity(flight.getOrigin())
-                                .arrivalCity(flight.getDestination())
-                                .departureDate(flight.getDepartureTime().toLocalDate())
-                                .price(flight.getPrice())
-                                .availableSeats(availableSeats)
-                                .aircraft(aircraft)  // Objets de FeignClient
-                                .build();
+                    AircraftDto aircraft = null;
+                    try {
+                        aircraft = aircraftClient.getAircraftById(flight.getAircraftId());
+                    } catch (Exception e) {
+                        System.out.println("Aircraft not found for flight: " + flight.getFlightId());
                     }
-                    return null;
+
+                    return FlightResponseDto.builder()
+                            .flightId(flight.getFlightId())
+                            .flightNumber(flight.getFlightNumber())
+                            .origin(flight.getOrigin())
+                            .destination(flight.getDestination())
+                            .departureDate(flight.getDepartureTime().toLocalDate())
+                            .departureTime(flight.getDepartureTime().toLocalTime())
+                            .arrivalTime(flight.getArrivalTime().toLocalTime())
+                            .price(flight.getPrice())
+                            .availableSeats(availableSeats)
+                            .aircraft(aircraft)
+                            .build();
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
