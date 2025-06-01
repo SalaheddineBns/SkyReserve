@@ -21,6 +21,12 @@ public class BaggageService {
     @Autowired
     private BaggageMapper baggageMapper;
 
+    public List<BaggageResponseDto> getAllBaggage() {
+        return baggageRepository.findAll().stream()
+                .map(baggageMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public BaggageResponseDto reserveBaggage(BaggageRequestDto requestDto) {
         BaggageType type = requestDto.getType(); // Assure-toi que getType() retourne bien un BaggageType
 

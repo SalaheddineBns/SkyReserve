@@ -37,6 +37,11 @@ public class FlightController {
     public Double getPriceByFlightId(@PathVariable Long id) {
         return flightService.getFlights().stream().filter(flight -> flight.getFlightId().equals(id)).findFirst().map(Flight::getPrice).orElse(null);
     }
+
+    @PostMapping()
+    public Flight addFlight(@RequestBody Flight flight) {
+        return flightService.addFlight(flight);
+    }
 //
 //    @GetMapping("/{id}")
 //    public String getFlightById() {

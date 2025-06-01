@@ -1,5 +1,6 @@
 package com.salah.baggageservice.controller;
 
+import com.salah.baggageservice.BaggageServiceApplication;
 import com.salah.baggageservice.dto.BaggageRequestDto;
 import com.salah.baggageservice.dto.BaggageResponseDto;
 import com.salah.baggageservice.service.BaggageService;
@@ -17,11 +18,16 @@ public class BaggageController {
     @Autowired
     private BaggageService baggageService;
 
+    @GetMapping("")
+    public ResponseEntity<List<BaggageServiceApplication>> getAllBaggage() {
+        return ResponseEntity.ok(baggageService.getAllBaggage());
+    }
+
     @PostMapping("/reserve")
     public ResponseEntity<BaggageResponseDto> reserveBaggage(@RequestBody BaggageRequestDto requestDto) {
         BaggageResponseDto response = baggageService.reserveBaggage(requestDto);
         return ResponseEntity.ok(response);
-    }
+
 
     @GetMapping("/booking/{bookingId}")
     public ResponseEntity<List<BaggageResponseDto>> getBaggageByBooking(@PathVariable Long bookingId) {

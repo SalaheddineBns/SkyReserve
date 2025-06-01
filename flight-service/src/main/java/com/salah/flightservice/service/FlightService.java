@@ -40,7 +40,7 @@ public class FlightService {
             end = start.plusDays(1);
         }
 
-        System.out.println(origin + " " + destination + " " + start + " " + end + " $$$$$$$$$$");
+        System.out.println(origin + " " + destination + " " + start + " " + end + " $$$$$$$$$$"+numberOfPassengers);
 
         List<Flight> flights = flightRepository.searchFlights(origin, destination, start, end);
 
@@ -76,6 +76,8 @@ public class FlightService {
                 .collect(Collectors.toList());
     }
 
-
+    public Flight addFlight(Flight flight) {
+        return flightRepository.save(flight);
+    }
 
 }
