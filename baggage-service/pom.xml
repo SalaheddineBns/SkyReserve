@@ -44,7 +44,8 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <version>1.18.30</version> <!-- 建议加上版本 -->
+            <scope>provided</scope> <!-- 保持 provided 不会打包进最终 JAR -->
         </dependency>
 
         <!-- MapStruct -->
