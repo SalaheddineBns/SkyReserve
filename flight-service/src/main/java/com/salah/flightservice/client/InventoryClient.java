@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 
-@FeignClient(name = "inventory-service",url = "http://localhost:8082")
+@FeignClient(name = "inventory-service")
 public interface InventoryClient {
 
     @GetMapping("/api/inventory/check")

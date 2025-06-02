@@ -19,7 +19,7 @@ public class BaggageController {
     private BaggageService baggageService;
 
     @GetMapping("")
-    public ResponseEntity<List<BaggageServiceApplication>> getAllBaggage() {
+    public ResponseEntity<List<BaggageResponseDto>> getAllBaggage() {
         return ResponseEntity.ok(baggageService.getAllBaggage());
     }
 
@@ -27,7 +27,7 @@ public class BaggageController {
     public ResponseEntity<BaggageResponseDto> reserveBaggage(@RequestBody BaggageRequestDto requestDto) {
         BaggageResponseDto response = baggageService.reserveBaggage(requestDto);
         return ResponseEntity.ok(response);
-
+    }
 
     @GetMapping("/booking/{bookingId}")
     public ResponseEntity<List<BaggageResponseDto>> getBaggageByBooking(@PathVariable Long bookingId) {

@@ -10,21 +10,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-@FeignClient(name = "inventory-service",url = "http://localhost:8082/api/inventory/")
+@FeignClient(name = "inventory-service")
 public interface InventoryClient {
 
-    @GetMapping("check")
+    @GetMapping("/api/inventory/check")
     boolean checkAvailability(  @RequestParam Long flightId,
                                 @RequestParam int seatsRequested);
 
-    @PostMapping("/reserve")
+    @PostMapping("/api/inventory/reserve")
     ResponseEntity<String> reserveSeats(@RequestBody SeatReservationRequestDto request);
 
-    @GetMapping("available-seats")
+    @GetMapping("/api/inventory/available-seats")
     Integer getAvailableSeats(
             @RequestParam("flightId") Long flightId
     );
 
-    @PostMapping("/release")
+    @PostMapping("/api/inventory/release")
     ResponseEntity<String> releaseSeats(@RequestBody SeatReleaseRequestDto request);
 }

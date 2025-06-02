@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "baggage-service", url = "http://localhost:8086/api/baggages")
+@FeignClient(name = "baggage-service")
 public interface BaggageClient {
 
-    @PostMapping("/reserve")
+    @PostMapping("/api/baggages/reserve")
     BaggageResponseDto reserveBaggage(@RequestBody BaggageRequestDto requestDto);
 
-    @GetMapping("/booking/{bookingId}")
+    @GetMapping("/api/baggages/booking/{bookingId}")
     List<BaggageResponseDto> getBaggageByBooking(@PathVariable("bookingId") Long bookingId);
 
-    @PostMapping("/{baggageId}/checkin")
+    @PostMapping("/api/baggages/{baggageId}/checkin")
     BaggageResponseDto checkInBaggage(@PathVariable("baggageId") Long baggageId);
 }
