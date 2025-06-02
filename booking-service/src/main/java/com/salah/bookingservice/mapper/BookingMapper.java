@@ -10,12 +10,19 @@ public interface BookingMapper {
 
     BookingResponseDto toDto(Booking booking);
 
-    @Mapping(target = "firstName", expression = "java(getFirstPassengerFirstName(requestDto))")
-    @Mapping(target = "lastName", expression = "java(getFirstPassengerLastName(requestDto))")
-    @Mapping(target = "email", expression = "java(getFirstPassengerEmail(requestDto))")
-    @Mapping(target = "phone", expression = "java(getFirstPassengerPhone(requestDto))")
-    @Mapping(target = "civility", expression = "java(getFirstPassengerCivility(requestDto))")
     Booking toEntity(BookingRequestDto requestDto);
+
+    @AfterMapping
+    default void enrichBookingWithPassengerInfo(BookingRequestDto requestDto, @MappingTarget Booking booking) {
+        if (requestDto.passengers() != null && !requestDto.passengers().isEmpty()) {
+            var passenger = requestDto.passengers().get(0);
+            booking.setFirstName(passenger.firstName());
+            booking.setLastName(passenger.lastName());
+            booking.setEmail(passenger.email());
+            booking.setPhone(passenger.phone());
+            booking.setCivility(passenger.civilite());
+        }
+    }
 
     // Méthodes helpers
     default String getFirstPassengerFirstName(BookingRequestDto requestDto) {
