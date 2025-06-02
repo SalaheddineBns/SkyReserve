@@ -102,12 +102,16 @@ public class BookingService {
         inventoryClient.reserveSeats(seatRequest);
 
         // 6️⃣ Retourner le résultat
-        return bookingMapper.toDto(savedBooking);
+        BookingResponseDto response = bookingMapper.toDto(savedBooking, request.passengers());
+        return response;
+
+
     }
 
     public List<BookingResponseDto> getAllBookings() {
         return bookingRepository.findAll().stream()
-                .map(bookingMapper::toDto)
+                .map(booking -> bookingMapper.toDto(booking, List.of())) // Passengers = vide
                 .collect(Collectors.toList());
     }
+
 }

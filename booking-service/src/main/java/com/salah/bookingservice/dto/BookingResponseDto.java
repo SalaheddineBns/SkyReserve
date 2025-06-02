@@ -1,6 +1,7 @@
 package com.salah.bookingservice.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 // status a voir !!! pending , confirmed, canceled
 
 
@@ -14,15 +15,16 @@ public record BookingResponseDto(
         LocalDateTime bookingDate,    // Date et heure de la réservation
         LocalDateTime expirationDate, // Date et heure d’expiration
 
-        Double baggagesFees,    // Frais de bagages (si applicable)
 
         // Infos sur le client
         String firstName,
         String lastName,
         String email,
         String phone,
-        String civility          // M., Mme., etc.
+        String civility,    // M., Mme., etc.
 
+        // 🎯 La liste des passagers liés à cette réservation
+        List<PassengerDto>passengers
         // (Optionnel) Si tu veux, tu peux inclure aussi :
         // List<BaggageOptionDto> baggages  // Détails des bagages si besoin
 ) {}
