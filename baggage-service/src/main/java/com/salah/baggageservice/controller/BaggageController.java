@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/baggages")
@@ -24,7 +26,7 @@ public class BaggageController {
     }
 
     @GetMapping("/booking/{bookingId}")
-    public ResponseEntity<List<BaggageResponseDto>> getBaggageByBooking(@PathVariable Long bookingId) {
+    public ResponseEntity<List<BaggageResponseDto>> getBaggageByBooking(@PathVariable UUID bookingId) {
         List<BaggageResponseDto> baggages = baggageService.getBaggagesByBookingId(bookingId);
         return ResponseEntity.ok(baggages);
     }
