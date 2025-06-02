@@ -8,6 +8,19 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface BookingMapper {
 
+    @Mapping(target = "bookingId", source = "bookingId")
+    @Mapping(target = "flightId", source = "flightId")
+    @Mapping(target = "seats", source = "seats")
+    @Mapping(target = "totalPrice", source = "totalPrice")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "bookingDate", source = "bookingDate")
+    @Mapping(target = "expirationDate", source = "expirationDate")
+    @Mapping(target = "baggagesFees", source = "baggagesFees")
+    @Mapping(target = "firstName", source = "firstName")
+    @Mapping(target = "lastName", source = "lastName")
+    @Mapping(target = "email", source = "email")
+    @Mapping(target = "phone", source = "phone")
+    @Mapping(target = "civility", source = "civility")
     BookingResponseDto toDto(Booking booking);
 
     Booking toEntity(BookingRequestDto requestDto);
@@ -23,6 +36,7 @@ public interface BookingMapper {
             booking.setCivility(passenger.civilite());
         }
     }
+
 
     // Méthodes helpers
     default String getFirstPassengerFirstName(BookingRequestDto requestDto) {
