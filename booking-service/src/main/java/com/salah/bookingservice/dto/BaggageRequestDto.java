@@ -4,10 +4,12 @@ import com.salah.bookingservice.model.enums.BaggageType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 public class BaggageRequestDto {
-    private Long bookingId;
+    private UUID bookingId;
     private BaggageType type;
     private Double weight;
     private Double price;

@@ -5,6 +5,8 @@ import com.salah.baggageservice.model.enums.BaggageType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "baggages")
 @Data
@@ -17,7 +19,7 @@ public class Baggage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long bookingId;
+    private UUID bookingId;
 
     @Enumerated(EnumType.STRING)
     private BaggageType type;

@@ -2,11 +2,12 @@ package com.salah.bookingservice.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 // status a voir !!! pending , confirmed, canceled
 
 
 public record BookingResponseDto(
-        Long bookingId,         // Identifiant unique de la réservation
+        UUID bookingId,         // Identifiant unique de la réservation
         Long flightId,          // Identifiant du vol réservé
         Integer seats,          // Nombre de sièges réservés
         Double totalPrice,      // Prix total payé ou à payer
