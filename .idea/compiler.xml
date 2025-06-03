@@ -11,25 +11,17 @@
         <module name="config-server" />
         <module name="registry-server" />
       </profile>
-      <profile name="Annotation profile for checkIn-service" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
-        </processorPath>
-        <module name="checkIn-service" />
-      </profile>
       <profile name="Annotation profile for identity-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
         </processorPath>
         <module name="identity-service" />
+        <module name="checkIn-service" />
       </profile>
-      <profile name="Annotation profile for baggage-service" enabled="true">
+      <profile name="Annotation profile for booking-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -41,7 +33,7 @@
         <module name="baggage-service" />
         <module name="booking-service" />
       </profile>
-      <profile name="Annotation profile for flight-service" enabled="true">
+      <profile name="Annotation profile for PaymentService" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -49,6 +41,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar" />
         </processorPath>
         <module name="aircraft-service" />
+        <module name="payment-service" />
         <module name="inventory-service" />
         <module name="flight-service" />
         <module name="PaymentService" />
@@ -67,6 +60,7 @@
       <module name="flight-service" options="-parameters" />
       <module name="identity-service" options="-parameters" />
       <module name="inventory-service" options="-parameters" />
+      <module name="payment-service" options="-parameters" />
       <module name="registry-server" options="-parameters" />
     </option>
   </component>

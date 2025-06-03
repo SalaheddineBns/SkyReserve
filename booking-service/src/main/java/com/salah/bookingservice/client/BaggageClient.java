@@ -6,6 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @FeignClient(name = "baggage-service")
 public interface BaggageClient {
@@ -14,7 +15,7 @@ public interface BaggageClient {
     BaggageResponseDto reserveBaggage(@RequestBody BaggageRequestDto requestDto);
 
     @GetMapping("/api/baggages/booking/{bookingId}")
-    List<BaggageResponseDto> getBaggageByBooking(@PathVariable("bookingId") Long bookingId);
+    List<BaggageResponseDto> getBaggageByBooking(@PathVariable("bookingId") UUID bookingId);
 
     @PostMapping("/api/baggages/{baggageId}/checkin")
     BaggageResponseDto checkInBaggage(@PathVariable("baggageId") Long baggageId);
