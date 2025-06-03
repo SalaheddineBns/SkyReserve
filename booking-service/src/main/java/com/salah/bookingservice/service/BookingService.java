@@ -8,11 +8,13 @@ import com.salah.bookingservice.mapper.BookingMapper;
 import com.salah.bookingservice.model.Booking;
 import com.salah.bookingservice.repository.BookingRepository;
 import com.salah.bookingservice.util.PriceCalculator;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -113,5 +115,24 @@ public class BookingService {
                 .map(booking -> bookingMapper.toDto(booking, List.of())) // Passengers = vide
                 .collect(Collectors.toList());
     }
+
+    //  Il faut ajouter ceci !!!
+    public BookingResponseDto getBookingById(UUID bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with id: " + bookingId));
+
+        // Vous pouvez également appeler BaggageClient pour enregistrer les passagers.
+        // Ici, nous passons d'abord List.of(), lorsque nous aurons le temps d'améliorer la logique de chargement des passagers.
+        return bookingMapper.toDto(booking, List.of());
+    }
+
+    @Transactional
+    public void updateBookingStatus(UUID bookingId, String status) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with id: " + bookingId));
+        booking.setStatus(status);
+        bookingRepository.save(booking);
+    }
+
 
 }

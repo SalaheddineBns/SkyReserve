@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -28,4 +29,20 @@ public class BookingController {
     public ResponseEntity<List<BookingResponseDto>> getAllBookings() {
         return ResponseEntity.ok(bookingService.getAllBookings());
     }
+
+    // Récupérer une réservation par ID
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<BookingResponseDto> getBookingById(@PathVariable UUID bookingId) {
+        BookingResponseDto bookingDto = bookingService.getBookingById(bookingId);
+        return ResponseEntity.ok(bookingDto);
+    }
+
+    @PutMapping("/{bookingId}/status")
+    public ResponseEntity<Void> updateBookingStatus(@PathVariable UUID bookingId, @RequestParam String status) {
+        bookingService.updateBookingStatus(bookingId, status);
+        return ResponseEntity.ok().build();
+    }
+
+
+
 }
