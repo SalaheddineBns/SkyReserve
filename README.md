@@ -83,13 +83,15 @@ Pour faciliter le développement local et les tests, chaque service écoute sur 
 
 ### ✈️ AircraftService - Gestion des Avions
 
-| Méthode | Point d'accès | Description | Paramètres/Corps |
-|---------|---------------|-------------|------------------|
-| `GET` | `/api/aircrafts` | Récupère tous les avions | - |
-| `GET` | `/api/aircrafts/{id}` | Récupère un avion par ID | `id` (obligatoire) - Long |
-| `POST` | `/api/aircrafts` | Crée un nouvel avion | Corps: `AircraftDTO` |
-| `PUT` | `/api/aircrafts/{id}` | Met à jour les informations d'un avion | `id` (obligatoire), Corps: `AircraftDTO` |
-| `DELETE` | `/api/aircrafts/{id}` | Supprime un avion | `id` (obligatoire) - Long |
+| Méthode | Point d'accès           | Description                             | Paramètres/Corps                                                                 |
+|---------|------------------------|-----------------------------------------|----------------------------------------------------------------------------------|
+| `GET`   | `/api/aircrafts`       | Récupère tous les avions                | -                                                                                |
+| `GET`   | `/api/aircrafts/{id}`  | Récupère un avion par ID                | `id` (obligatoire) - Long                                                       |
+| `POST`  | `/api/aircrafts`       | Crée un nouvel avion                    | Corps: `AircraftRequestDTO`  |
+|         |                        |                                         | Champs : `code`, `type`, `airline`, `status`, `numberOfRows`, `seatPerRow`, `seatClassRows` (Map<String, List<Integer>>) |
+| `PUT`   | `/api/aircrafts/{id}`  | Met à jour les informations d'un avion | `id` (obligatoire) - Long<br>Corps: `AircraftRequestDTO` (mêmes champs que POST) |
+| `DELETE`| `/api/aircrafts/{id}`  | Supprime un avion                      | `id` (obligatoire) - Long                                                       |
+
 
 ### 🎫 BookingService - Gestion des Réservations
 
