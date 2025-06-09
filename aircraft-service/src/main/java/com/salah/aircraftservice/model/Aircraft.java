@@ -4,6 +4,8 @@ package com.salah.aircraftservice.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -25,5 +27,14 @@ public class Aircraft {
     private String airline;
 
     private String status; // actif, maintenance, etc.
+
+    private int numberOfRows;
+
+    private String seatPerRow;
+
+    @ElementCollection
+    @CollectionTable(name = "aircraft_seat_layout", joinColumns = @JoinColumn(name = "aircraft_id"))
+    @Column(name = "seat_number")
+    private List<String> seatLayout;
 }
 

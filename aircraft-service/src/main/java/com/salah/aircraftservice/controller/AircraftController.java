@@ -1,6 +1,7 @@
 package com.salah.aircraftservice.controller;
 
-import com.salah.aircraftservice.dto.AircraftDTO;
+import com.salah.aircraftservice.dto.AircraftRequestDTO;
+import com.salah.aircraftservice.dto.AircraftResponseDTO;
 import com.salah.aircraftservice.service.AircraftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,22 +16,23 @@ public class AircraftController {
     private AircraftService aircraftService;
 
     @GetMapping
-    public List<AircraftDTO> getAll() {
+    public List<AircraftResponseDTO> getAll() {
         return aircraftService.getAll();
     }
 
     @GetMapping("/{id}")
-    public AircraftDTO getById(@PathVariable Long id) {
+    public AircraftResponseDTO getById(@PathVariable Long id) {
         return aircraftService.getById(id);
     }
 
     @PostMapping
-    public AircraftDTO save(@RequestBody AircraftDTO dto) {
+    public AircraftResponseDTO save(@RequestBody AircraftRequestDTO dto) {
         return aircraftService.save(dto);
     }
 
+    // PUT 同理，用 RequestDTO 请求体
     @PutMapping("/{id}")
-    public AircraftDTO update(@PathVariable Long id, @RequestBody AircraftDTO dto) {
+    public AircraftResponseDTO update(@PathVariable Long id, @RequestBody AircraftRequestDTO dto) {
         return aircraftService.updateAircraft(id, dto);
     }
 
