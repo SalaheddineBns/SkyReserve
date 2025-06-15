@@ -66,9 +66,9 @@ public class InventoryController {
      * @param flightId Identifiant du vol
      * @return Nombre de sièges disponibles
      */
-    @GetMapping("/available-seats")
+    @GetMapping("/seats/{flightId}")
     public ResponseEntity<Integer> getAvailableSeats(
-            @RequestParam Long flightId
+            @PathVariable Long flightId
     ) {
         Integer availableSeats = inventoryService.getAvailableSeats(flightId);
         return ResponseEntity.ok(availableSeats);
