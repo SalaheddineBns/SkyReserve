@@ -102,6 +102,171 @@ Pour faciliter le développement local et les tests, chaque service écoute sur 
 
 ---
 
+
+# ✈️ Documentation Postman – Service de Check-in
+
+**Base URL** : `http://localhost:8080/checkin`
+
+---
+
+## 📌 1. Faire un check-in avec sélection de siège
+
+**Méthode** : `POST`  
+**URL** : `/checkin`
+
+### 🔸 Corps de la requête (JSON) :
+
+```json
+{
+  "bookingId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "seatNumber": "12A",
+  "firstName": "Jean",
+  "lastName": "Dupont"
+}
+```
+
+### ✅ Description :
+
+Effectue l’enregistrement d’un passager pour une réservation confirmée, avec un siège spécifié.
+
+---
+
+## 🎲 2. Faire un check-in aléatoire (sans choisir de siège)
+
+**Méthode** : `POST`  
+**URL** : `/checkin/random`
+
+### 🔸 Corps de la requête (JSON) :
+
+```json
+{
+  "bookingId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "firstName": "Jean",
+  "lastName": "Dupont"
+}
+```
+
+### ✅ Description :
+
+Effectue un check-in avec attribution automatique d’un siège disponible.
+
+---
+
+## 💺 3. Lister les sièges disponibles pour un vol
+
+**Méthode** : `GET`  
+**URL** : `/checkin/available-seats/{flightId}`
+
+### 🔸 Exemple :
+
+```
+/checkin/available-seats/123456
+```
+
+### 🔸 Réponse attendue :
+
+```json
+["12A", "13B", "14C"]
+```
+
+### ✅ Description :
+
+Retourne la liste des sièges disponibles pour un vol donné.
+
+---
+
+## 👨‍👩‍👧‍👦 4. Obtenir les passagers liés à une réservation
+
+**Méthode** : `GET`  
+**URL** : `/checkin/{bookingId}/passengers`
+
+### 🔸 Exemple :
+
+```
+/checkin/83f65e01-95e2-41e3-b298-5c560f2c29dc
+```
+
+### 🔸 Réponse attendue :
+
+```json
+[
+  {
+    "firstName": "Jean",
+    "lastName": "Dupont"
+  },
+  {
+    "firstName": "Claire",
+    "lastName": "Martin"
+  }
+]
+```
+
+### ✅ Description :
+
+Affiche tous les passagers enregistrés pour une réservation.
+
+---
+
+## 📋 5. Récupérer les enregistrements (check-ins) d’une réservation
+
+**Méthode** : `GET`  
+**URL** : `/checkin/{bookingId}`
+
+### 🔸 Exemple :
+
+```
+/checkin/83f65e01-95e2-41e3-b298-5c560f2c29dc
+```
+
+### 🔸 Réponse attendue :
+
+```json
+[
+  {
+    "firstName": "Jean",
+    "lastName": "Dupont",
+    "seatNumber": "12A",
+    "checkinTime": "2025-06-15T10:45:00",
+    "boardingPassNumber": "1fc7f3cb-1350-4b9a-9c1e-5c99e9fc89b3"
+  }
+]
+```
+
+### ✅ Description :
+
+Renvoie tous les enregistrements effectués sur cette réservation.
+
+---
+
+## 🛫 6. Récupérer une carte d’embarquement via boardingPassNumber
+
+**Méthode** : `GET`  
+**URL** : `/checkin/boarding-pass/{boardingPassNumber}`
+
+### 🔸 Exemple :
+
+```
+/checkin/boarding-pass/1fc7f3cb-1350-4b9a-9c1e-5c99e9fc89b3
+```
+
+### 🔸 Réponse attendue :
+
+```json
+{
+  "passengerName": "Jean Dupont",
+  "flightNumber": "AF1234",
+  "seatNumber": "12A",
+  "flightTime": "2025-06-20T18:00:00",
+  "gate": "B12",
+  "boardingPassNumber": "1fc7f3cb-1350-4b9a-9c1e-5c99e9fc89b3"
+}
+```
+
+### ✅ Description :
+
+Permet de consulter les informations de la carte d’embarquement liée à un passager enregistré.
+
+
 ## 🚀 How to Run
 
 ### 🐳 With Docker Compose
