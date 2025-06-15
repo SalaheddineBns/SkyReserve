@@ -9,10 +9,29 @@ import org.mapstruct.*;
 import java.util.List;
 @Mapper(componentModel = "spring")
 public interface BookingMapper {
-    @Mapping(target = "passengers", source = "passengers")
-    BookingResponseDto toDto(Booking booking, List<PassengerDto> passengers);
 
     Booking toEntity(BookingRequestDto requestDto);
+
+    // on n’utilise plus cette méthode car elle ne marche pas avec les records et deux sources :
+    // BookingResponseDto toDto(Booking booking, List<PassengerDto> passengers);
+
+    default BookingResponseDto toDto(Booking booking, List<PassengerDto> passengers) {
+        return new BookingResponseDto(
+                booking.getBookingId(),
+                booking.getFlightId(),
+                booking.getSeats(),
+                booking.getTotalPrice(),
+                booking.getStatus(),
+                booking.getBookingDate(),
+                booking.getExpirationDate(),
+                booking.getFirstName(),
+                booking.getLastName(),
+                booking.getEmail(),
+                booking.getPhone(),
+                booking.getCivility(),
+                passengers
+        );
+    }
 
     @AfterMapping
     default void enrichBookingWithPassengerInfo(BookingRequestDto requestDto, @MappingTarget Booking booking) {

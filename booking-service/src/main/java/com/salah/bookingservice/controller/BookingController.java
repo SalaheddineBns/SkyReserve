@@ -20,6 +20,7 @@ public class BookingController {
     // Créer une réservation
     @PostMapping
     public ResponseEntity<BookingResponseDto> createBooking(@RequestBody BookingRequestDto bookingRequest) {
+        System.out.println(bookingRequest.toString());
         BookingResponseDto bookingDto = bookingService.createBooking(bookingRequest);
         return ResponseEntity.status(201).body(bookingDto); // 201 CREATED
     }

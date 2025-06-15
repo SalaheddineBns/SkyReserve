@@ -65,6 +65,14 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-resolver-dns-native-macos</artifactId>
+			<version>4.1.108.Final</version>
+			<classifier>osx-x86_64</classifier> <!-- Or 'osx-aarch_64' for Apple Silicon -->
+		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

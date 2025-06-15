@@ -53,6 +53,7 @@ public class BookingService {
 
         // 3️⃣ Créer le booking en base (status = PENDING)
         Booking booking = bookingMapper.toEntity(request);
+
         // 1️⃣ Récupérer tous les bagages de tous les passagers en une seule liste
         List<BaggageOption> allBaggageOptions = request.passengers().stream()
                 .filter(passenger -> passenger.baggageOptions() != null)
@@ -67,7 +68,7 @@ public class BookingService {
         booking.setBookingDate(LocalDateTime.now());
         booking.setExpirationDate(LocalDateTime.now().plusMinutes(10)); // ⏳ Expire dans 10 min
         booking.setStatus("PENDING");
-
+        booking.setFlightId(request.flightId());
         // 🧑‍✈️ Ajouter le premier passager comme info principale (optionnel)
         if (request.passengers() != null && !request.passengers().isEmpty()) {
             PassengerDto mainPassenger = request.passengers().get(0);
@@ -102,9 +103,11 @@ public class BookingService {
         // 5️⃣ Réserver les sièges après succès
         SeatReservationRequestDto seatRequest = new SeatReservationRequestDto(request.flightId(), request.seats());
         inventoryClient.reserveSeats(seatRequest);
-
+        System.out.println(savedBooking.toString() + " created.");
         // 6️⃣ Retourner le résultat
         BookingResponseDto response = bookingMapper.toDto(savedBooking, request.passengers());
+
+        System.out.println(response.toString() + " created.");
         return response;
 
 

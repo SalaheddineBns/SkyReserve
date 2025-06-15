@@ -6,5 +6,7 @@ public record BookingRequestDto(
         Long flightId,
         int seats,
         List<PassengerDto> passengers
-) {}
+) {
+
+}
 
