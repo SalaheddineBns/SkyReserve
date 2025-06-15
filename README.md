@@ -105,7 +105,7 @@ Pour faciliter le développement local et les tests, chaque service écoute sur 
 
 # ✈️ Documentation Postman – Service de Check-in
 
-**Base URL** : `http://localhost:8080/checkin`
+**Base URL** : `http://localhost:8084/checkin`
 
 ---
 
