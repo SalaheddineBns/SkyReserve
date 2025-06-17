@@ -16,8 +16,6 @@ public class BookingDto {
     private UUID bookingId;
     private String flightNumber;
     private Long flightId;
-    private LocalDateTime flightTime;
     private String status;
     private List<PassengerDto> passengers;
-    private List<BaggageOption> baggageOptions;
 }
