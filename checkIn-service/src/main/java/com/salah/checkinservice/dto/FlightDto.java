@@ -1,11 +1,11 @@
 package com.salah.checkinservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -13,8 +13,15 @@ import java.time.LocalTime;
 public class FlightDto {
     private Long flightId;
     private String flightNumber;
-    private LocalDate departureDate;
-    private LocalTime departureTime; // 🕒 Heure de départ
-    private LocalTime arrivalTime;   // 🕒 Heure d'arrivée
-    private Integer availableSeats;
+    private String origin;
+    private String destination;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime departureTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime arrivalTime;
+
+    private Double price;
+    private Long aircraftId;
 }

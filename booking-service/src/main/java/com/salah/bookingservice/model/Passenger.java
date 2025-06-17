@@ -21,5 +21,4 @@ public class Passenger {
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
-    // + getters, setters, constructeurs
 }

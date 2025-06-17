@@ -1,7 +1,9 @@
 package com.salah.paymentservice.service;
 
 import com.salah.paymentservice.client.BookingClient;
+import com.salah.paymentservice.client.NotificationClient;
 import com.salah.paymentservice.dto.BookingResponseDto;
+import com.salah.paymentservice.dto.EmailRequestDto;
 import com.salah.paymentservice.dto.PaymentRequestDto;
 import com.salah.paymentservice.dto.PaymentResponseDto;
 import com.salah.paymentservice.mapper.PaymentMapper;
@@ -20,6 +22,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private NotificationClient notificationClient;
 
     @Autowired
     private PaymentMapper paymentMapper;
@@ -54,6 +58,14 @@ public class PaymentServiceImpl implements PaymentService {
 
         // 🟢 这里更新 Booking 状态
         bookingClient.updateBookingStatus(booking.bookingId(), "CONFIRMED");
+
+        // 📨 Envoi de l’email
+        notificationClient.sendEmail(new EmailRequestDto(
+                booking.email(), // ou booking.getEmail()
+                "Confirmation de votre réservation ✈️",
+                "Bonjour " + booking.firstName() + ",\n\nVotre paiement de " + booking.totalPrice() + "€ a été reçu. Votre réservation est confirmée.\n\nMerci."
+        ));
+
 
         // 6️⃣ 返回 Response
         return paymentMapper.toResponse(saved);

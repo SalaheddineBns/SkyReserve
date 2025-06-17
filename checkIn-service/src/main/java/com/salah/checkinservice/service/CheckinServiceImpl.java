@@ -48,7 +48,7 @@ public class CheckinServiceImpl implements CheckinService {
     public CheckinResponseDto performCheckin(UUID bookingId, String preferredSeat, String firstName, String lastName) {
         BookingDto booking = bookingClient.getBooking(bookingId);
         FlightDto flight = flightClient.getFlight(booking.getFlightId());
-        LocalDateTime flightTime = LocalDateTime.of(flight.getDepartureDate(), flight.getDepartureTime()); // ✨ 这里定义了 flightTime
+        LocalDateTime flightTime = flight.getDepartureTime();
         LocalDateTime now = LocalDateTime.now();
 
         boolean passengerExists = booking.getPassengers().stream()
@@ -132,10 +132,8 @@ public class CheckinServiceImpl implements CheckinService {
 
         FlightDto flight = flightClient.getFlight(booking.getFlightId());
 
-        LocalDateTime flightTime = LocalDateTime.of(
-                flight.getDepartureDate(),
-                flight.getDepartureTime()
-        );
+        // ✅ Plus besoin de construire LocalDateTime à partir de deux champs
+        LocalDateTime flightTime = flight.getDepartureTime();
 
         return BoardingPassDto.builder()
                 .passengerName(checkin.getFirstName() + " " + checkin.getLastName())
