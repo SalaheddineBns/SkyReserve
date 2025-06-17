@@ -6,7 +6,9 @@ import com.salah.bookingservice.client.InventoryClient;
 import com.salah.bookingservice.dto.*;
 import com.salah.bookingservice.mapper.BookingMapper;
 import com.salah.bookingservice.model.Booking;
+import com.salah.bookingservice.model.Passenger;
 import com.salah.bookingservice.repository.BookingRepository;
+import com.salah.bookingservice.repository.PassengerRepository;
 import com.salah.bookingservice.util.PriceCalculator;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class BookingService {
     private BookingRepository bookingRepository;
 
     @Autowired
+    private PassengerRepository passengerRepository;
+
+    @Autowired
     private FlightClient flightClient;
 
     @Autowired
@@ -39,37 +44,30 @@ public class BookingService {
     private PriceCalculator priceCalculator;
 
     public BookingResponseDto createBooking(BookingRequestDto request) {
-        // 1️⃣ Vérifier le vol (FlightService)
+        // 1. Vérifier le vol
         FlightDto flight = flightClient.getFlightById(request.flightId());
-        if (flight == null) {
-            throw new IllegalArgumentException("Flight not found");
-        }
+        if (flight == null) throw new IllegalArgumentException("Flight not found");
 
-        // 2️⃣ Vérifier la disponibilité des sièges (InventoryService)
+        // 2. Vérifier disponibilité des sièges
         boolean seatsAvailable = inventoryClient.checkAvailability(request.flightId(), request.seats());
-        if (!seatsAvailable) {
-            throw new IllegalArgumentException("Not enough seats available");
-        }
+        if (!seatsAvailable) throw new IllegalArgumentException("Not enough seats available");
 
-        // 3️⃣ Créer le booking en base (status = PENDING)
+        // 3. Créer l'entité booking
         Booking booking = bookingMapper.toEntity(request);
 
-        // 1️⃣ Récupérer tous les bagages de tous les passagers en une seule liste
+        // 4. Calculer le prix
         List<BaggageOption> allBaggageOptions = request.passengers().stream()
-                .filter(passenger -> passenger.baggageOptions() != null)
-                .flatMap(passenger -> passenger.baggageOptions().stream())
+                .filter(p -> p.baggageOptions() != null)
+                .flatMap(p -> p.baggageOptions().stream())
                 .collect(Collectors.toList());
 
-// 2️⃣ Appeler le calcul du prix avec ces bagages
-        booking.setTotalPrice(
-                priceCalculator.calculateTotalPrice(flight, request.seats(), allBaggageOptions)
-        );
-
+        booking.setTotalPrice(priceCalculator.calculateTotalPrice(flight, request.seats(), allBaggageOptions));
         booking.setBookingDate(LocalDateTime.now());
-        booking.setExpirationDate(LocalDateTime.now().plusMinutes(10)); // ⏳ Expire dans 10 min
+        booking.setExpirationDate(LocalDateTime.now().plusMinutes(10));
         booking.setStatus("PENDING");
         booking.setFlightId(request.flightId());
-        // 🧑‍✈️ Ajouter le premier passager comme info principale (optionnel)
+
+        // ✅ Ajouter les infos du passager principal
         if (request.passengers() != null && !request.passengers().isEmpty()) {
             PassengerDto mainPassenger = request.passengers().get(0);
             booking.setFirstName(mainPassenger.firstName());
@@ -81,8 +79,25 @@ public class BookingService {
 
         Booking savedBooking = bookingRepository.save(booking);
 
-        // 4️⃣ Gérer les bagages de chaque passager
-        if (request.passengers() != null && !request.passengers().isEmpty()) {
+        // 5. Sauvegarde des passagers
+        if (request.passengers() != null) {
+            List<Passenger> passengers = request.passengers().stream().map(dto -> {
+                Passenger p = new Passenger();
+                p.setFirstName(dto.firstName());
+                p.setLastName(dto.lastName());
+                p.setEmail(dto.email());
+                p.setPhone(dto.phone());
+                p.setCivilite(dto.civilite());
+                p.setBooking(savedBooking);
+                return p;
+            }).toList();
+
+            passengerRepository.saveAll(passengers);
+            savedBooking.setPassengers(passengers);
+        }
+
+        // 6. Réserver les bagages
+        if (request.passengers() != null) {
             for (PassengerDto passenger : request.passengers()) {
                 if (passenger.baggageOptions() != null) {
                     for (BaggageOption option : passenger.baggageOptions()) {
@@ -90,8 +105,8 @@ public class BookingService {
                             BaggageRequestDto baggageRequest = new BaggageRequestDto(
                                     savedBooking.getBookingId(),
                                     option.type(),
-                                    null, // poids optionnel
-                                    null  // prix optionnel
+                                    null,
+                                    null
                             );
                             baggageClient.reserveBaggage(baggageRequest);
                         }
@@ -100,33 +115,47 @@ public class BookingService {
             }
         }
 
-        // 5️⃣ Réserver les sièges après succès
-        SeatReservationRequestDto seatRequest = new SeatReservationRequestDto(request.flightId(), request.seats());
-        inventoryClient.reserveSeats(seatRequest);
-        System.out.println(savedBooking.toString() + " created.");
-        // 6️⃣ Retourner le résultat
-        BookingResponseDto response = bookingMapper.toDto(savedBooking, request.passengers());
+        // 7. Réserver les sièges
+        inventoryClient.reserveSeats(new SeatReservationRequestDto(request.flightId(), request.seats()));
 
-        System.out.println(response.toString() + " created.");
-        return response;
-
-
+        return bookingMapper.toDto(savedBooking, request.passengers());
     }
 
     public List<BookingResponseDto> getAllBookings() {
         return bookingRepository.findAll().stream()
-                .map(booking -> bookingMapper.toDto(booking, List.of())) // Passengers = vide
+                .map(booking -> {
+                    List<PassengerDto> passengerDtos = booking.getPassengers().stream().map(p ->
+                            new PassengerDto(
+                                    p.getFirstName(),
+                                    p.getLastName(),
+                                    p.getEmail(),
+                                    p.getPhone(),
+                                    p.getCivilite(),
+                                    List.of() // Ajoute les bagages plus tard si besoin
+                            )
+                    ).toList();
+                    return bookingMapper.toDto(booking, passengerDtos);
+                })
                 .collect(Collectors.toList());
     }
 
-    //  Il faut ajouter ceci !!!
     public BookingResponseDto getBookingById(UUID bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found with id: " + bookingId));
 
-        // Vous pouvez également appeler BaggageClient pour enregistrer les passagers.
-        // Ici, nous passons d'abord List.of(), lorsque nous aurons le temps d'améliorer la logique de chargement des passagers.
-        return bookingMapper.toDto(booking, List.of());
+        List<Passenger> passengers = passengerRepository.findByBooking(booking);
+        List<PassengerDto> passengerDtos = passengers.stream().map(p ->
+                new PassengerDto(
+                        p.getFirstName(),
+                        p.getLastName(),
+                        p.getEmail(),
+                        p.getPhone(),
+                        p.getCivilite(),
+                        List.of()
+                )
+        ).toList();
+
+        return bookingMapper.toDto(booking, passengerDtos);
     }
 
     @Transactional
@@ -136,6 +165,4 @@ public class BookingService {
         booking.setStatus(status);
         bookingRepository.save(booking);
     }
-
-
 }

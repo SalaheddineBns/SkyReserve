@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -35,4 +37,8 @@ public class Booking {
     private String email;
     private String phone;
     private String civility;          // M. / Mme. / etc.
+
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    private List<Passenger> passengers = new ArrayList<>();
+
 }

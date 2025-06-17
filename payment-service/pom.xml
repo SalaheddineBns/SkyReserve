@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.1</version> <!-- 改成这个就OK -->
+		<version>3.2.5</version> <!-- Remplace 3.3.1 par 3.2.5 -->
 		<relativePath/>
 	</parent>
 
