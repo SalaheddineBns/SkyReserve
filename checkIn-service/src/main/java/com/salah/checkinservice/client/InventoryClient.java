@@ -8,9 +8,11 @@ import java.util.List;
 @FeignClient(name = "inventory-service")
 public interface InventoryClient {
 
-    @GetMapping("/api/inventory/seats/{flightId}")
+    @GetMapping("/api/inventory/seats-number/{flightId}")
     List<String> getAvailableSeats(@PathVariable Long flightId);
 
-    @PutMapping("/api/inventory/assign-seat")
-    void assignSeat(@RequestParam Long flightId, @RequestParam String seatNumber);
+    @PutMapping("/api/inventory/seats-number/{flightId}")
+    void assignSeat(@PathVariable("flightId") Long flightId,
+                    @RequestParam("seatNumber") String seatNumber);
+
 }
