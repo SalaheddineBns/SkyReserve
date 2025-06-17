@@ -78,6 +78,12 @@ public class CheckinServiceImpl implements CheckinService {
                     now.isAfter(flightTime.minus(CHECKIN_CLOSE_BEFORE_FLIGHT))) {
                 throw new IllegalStateException("Baggage check-in is only allowed between 2h and 30min before departure.");
             }
+
+            // ✅ 调用远程行李登记服务
+            baggageClient.checkinBaggage(bookingId,
+                    new BaggageCheckinRequestDto(firstName, lastName));
+
+
             if (!baggageClient.validateBaggage(bookingId)) {
                 throw new IllegalStateException("Baggage validation failed.");
             }
