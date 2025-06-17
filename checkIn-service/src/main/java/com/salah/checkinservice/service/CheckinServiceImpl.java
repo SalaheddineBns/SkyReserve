@@ -21,6 +21,7 @@ public class CheckinServiceImpl implements CheckinService {
     private final BookingClient bookingClient;
     private final InventoryClient inventoryClient;
     private final BaggageClient baggageClient;
+    private final FlightClient flightClient;
 
     private static final Duration CHECKIN_OPEN_BEFORE_FLIGHT = Duration.ofHours(48);
     private static final Duration CHECKIN_CLOSE_BEFORE_FLIGHT = Duration.ofMinutes(30);
@@ -46,7 +47,8 @@ public class CheckinServiceImpl implements CheckinService {
     @Override
     public CheckinResponseDto performCheckin(UUID bookingId, String preferredSeat, String firstName, String lastName) {
         BookingDto booking = bookingClient.getBooking(bookingId);
-        LocalDateTime flightTime = booking.getFlightTime();
+        FlightDto flight = flightClient.getFlight(booking.getFlightId());
+        LocalDateTime flightTime = LocalDateTime.of(flight.getDepartureDate(), flight.getDepartureTime()); // ✨ 这里定义了 flightTime
         LocalDateTime now = LocalDateTime.now();
 
         boolean passengerExists = booking.getPassengers().stream()
@@ -68,10 +70,9 @@ public class CheckinServiceImpl implements CheckinService {
         }
 
         // If passenger has SOUTE baggage, validate time range and call baggage service
-        boolean hasSoute = booking.getBaggageOptions() != null &&
-                booking.getBaggageOptions().stream()
-                        .anyMatch(opt -> "SOUTE".equalsIgnoreCase(opt.getType()) && opt.getQuantity() > 0);
-
+        boolean hasSoute = booking.getPassengers().stream()
+                .flatMap(p -> p.getBaggageOptions().stream())
+                .anyMatch(opt -> "SOUTE".equalsIgnoreCase(opt.getType()) && opt.getQuantity() > 0);
         if (hasSoute) {
             if (now.isBefore(flightTime.minus(BAGGAGE_OPEN_BEFORE_FLIGHT)) ||
                     now.isAfter(flightTime.minus(CHECKIN_CLOSE_BEFORE_FLIGHT))) {
@@ -123,11 +124,18 @@ public class CheckinServiceImpl implements CheckinService {
 
         BookingDto booking = bookingClient.getBooking(checkin.getBookingId());
 
+        FlightDto flight = flightClient.getFlight(booking.getFlightId());
+
+        LocalDateTime flightTime = LocalDateTime.of(
+                flight.getDepartureDate(),
+                flight.getDepartureTime()
+        );
+
         return BoardingPassDto.builder()
                 .passengerName(checkin.getFirstName() + " " + checkin.getLastName())
                 .flightNumber(booking.getFlightNumber())
                 .seatNumber(checkin.getSeatNumber())
-                .flightTime(booking.getFlightTime())
+                .flightTime(flightTime)
                 .gate("B12")
                 .boardingPassNumber(checkin.getBoardingPassNumber())
                 .build();
