@@ -4,12 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class BaggageCheckinRequestDto {
-    private Long customerId;
-    private UUID bookingId;
+@NoArgsConstructor
+public class SeatAssignmentRequestDto {
+    private Long flightId;
+    private String seatNumber;
+    private Long passengerId;
 }

@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class InventoryRequestDto {
+public class CreateInventoryRequestDto {
     private Long flightId;
     private int totalSeats;
 }
+

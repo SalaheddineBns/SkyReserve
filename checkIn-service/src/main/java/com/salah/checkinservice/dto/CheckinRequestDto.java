@@ -9,7 +9,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CheckinRequestDto {
     private UUID bookingId;
+    private Long passengerId;
     private String seatNumber;
-    private String firstName;
-    private String lastName;
 }

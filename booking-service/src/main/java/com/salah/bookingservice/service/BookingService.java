@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -67,7 +69,7 @@ public class BookingService {
         booking.setStatus("PENDING");
         booking.setFlightId(request.flightId());
 
-        // ✅ Ajouter les infos du passager principal
+        // 5. Ajouter les infos du passager principal
         if (request.passengers() != null && !request.passengers().isEmpty()) {
             PassengerDto mainPassenger = request.passengers().get(0);
             booking.setFirstName(mainPassenger.firstName());
@@ -79,9 +81,10 @@ public class BookingService {
 
         Booking savedBooking = bookingRepository.save(booking);
 
-        // 5. Sauvegarde des passagers
+        // 6. Sauvegarde des passagers
+        List<Passenger> savedPassengers = new ArrayList<>();
         if (request.passengers() != null) {
-            List<Passenger> passengers = request.passengers().stream().map(dto -> {
+            for (PassengerDto dto : request.passengers()) {
                 Passenger p = new Passenger();
                 p.setFirstName(dto.firstName());
                 p.setLastName(dto.lastName());
@@ -89,36 +92,56 @@ public class BookingService {
                 p.setPhone(dto.phone());
                 p.setCivilite(dto.civilite());
                 p.setBooking(savedBooking);
-                return p;
-            }).toList();
-
-            passengerRepository.saveAll(passengers);
-            savedBooking.setPassengers(passengers);
+                savedPassengers.add(passengerRepository.save(p));
+            }
+            savedBooking.setPassengers(savedPassengers);
         }
 
-        // 6. Réserver les bagages
-        if (request.passengers() != null) {
-            for (PassengerDto passenger : request.passengers()) {
-                if (passenger.baggageOptions() != null) {
-                    for (BaggageOption option : passenger.baggageOptions()) {
-                        for (int i = 0; i < option.quantity(); i++) {
-                            BaggageRequestDto baggageRequest = new BaggageRequestDto(
-                                    savedBooking.getBookingId(),
-                                    option.type(),
-                                    null,
-                                    null
-                            );
-                            baggageClient.reserveBaggage(baggageRequest);
-                        }
+        // 7. Mapping des passagers persistés vers DTOs (avec leurs ID)
+        List<PassengerDto> passengerDtos = savedPassengers.stream()
+                .map(p -> {
+                    Optional<PassengerDto> original = request.passengers().stream()
+                            .filter(reqP ->
+                                    reqP.firstName().equalsIgnoreCase(p.getFirstName()) &&
+                                            reqP.lastName().equalsIgnoreCase(p.getLastName()) &&
+                                            reqP.email().equalsIgnoreCase(p.getEmail()))
+                            .findFirst();
+
+                    return new PassengerDto(
+                            p.getId(),
+                            p.getFirstName(),
+                            p.getLastName(),
+                            p.getEmail(),
+                            p.getPhone(),
+                            p.getCivilite(),
+                            original.map(PassengerDto::baggageOptions).orElse(List.of())
+                    );
+                })
+                .toList();
+
+        // 8. Réserver les bagages avec les bons IDs
+        for (PassengerDto passenger : passengerDtos) {
+            if (passenger.baggageOptions() != null) {
+                for (BaggageOption option : passenger.baggageOptions()) {
+                    for (int i = 0; i < option.quantity(); i++) {
+                        BaggageRequestDto baggageRequest = new BaggageRequestDto(
+                                savedBooking.getBookingId(),
+                                passenger.passengerId(),  // ✅ maintenant non null
+                                option.type(),
+                                null,
+                                null
+                        );
+                        baggageClient.reserveBaggage(baggageRequest);
                     }
                 }
             }
         }
 
-        // 7. Réserver les sièges
+        // 9. Réserver les sièges
         inventoryClient.reserveSeats(new SeatReservationRequestDto(request.flightId(), request.seats()));
 
-        return bookingMapper.toDto(savedBooking, request.passengers());
+        // 10. Retourner la réponse complète
+        return bookingMapper.toDto(savedBooking, passengerDtos);
     }
 
     public List<BookingResponseDto> getAllBookings() {
@@ -126,6 +149,7 @@ public class BookingService {
                 .map(booking -> {
                     List<PassengerDto> passengerDtos = booking.getPassengers().stream().map(p ->
                             new PassengerDto(
+                                    p.getId(),
                                     p.getFirstName(),
                                     p.getLastName(),
                                     p.getEmail(),
@@ -146,6 +170,7 @@ public class BookingService {
         List<Passenger> passengers = passengerRepository.findByBooking(booking);
         List<PassengerDto> passengerDtos = passengers.stream().map(p ->
                 new PassengerDto(
+                        p.getId(),
                         p.getFirstName(),
                         p.getLastName(),
                         p.getEmail(),

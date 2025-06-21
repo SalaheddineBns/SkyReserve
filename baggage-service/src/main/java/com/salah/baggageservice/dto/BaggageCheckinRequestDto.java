@@ -1,4 +1,4 @@
-package com.salah.checkinservice.dto;
+package com.salah.baggageservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +10,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BaggageCheckinRequestDto {
-    private Long customerId;
     private UUID bookingId;
+    private Long passengerId;
 }

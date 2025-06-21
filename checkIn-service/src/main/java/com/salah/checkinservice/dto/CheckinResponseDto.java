@@ -20,6 +20,7 @@ public class CheckinResponseDto {
     private LocalDateTime checkinTime;
     private String firstName;
     private String lastName;
+    private Long passengerId;
 
     public CheckinResponseDto(Checkin entity) {
         this.checkinId = entity.getId();
@@ -29,5 +30,6 @@ public class CheckinResponseDto {
         this.checkinTime = entity.getCheckinTime();
         this.firstName = entity.getFirstName();
         this.lastName = entity.getLastName();
+        this.passengerId = entity.getPassengerId();
     }
 }

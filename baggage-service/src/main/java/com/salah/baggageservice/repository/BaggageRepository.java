@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.UUID;
 
-public interface BaggageRepository extends JpaRepository<Baggage, Long> {
+public interface BaggageRepository extends JpaRepository<Baggage, UUID> {
     List<Baggage> findAllByBookingId(UUID bookingId);
 }

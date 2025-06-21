@@ -1,133 +1,105 @@
 package com.salah.inventoryservice.service;
 
-import com.salah.inventoryservice.client.FlightClient;
-import com.salah.inventoryservice.dto.FlightDto;
-import com.salah.inventoryservice.dto.InventoryRequestDto;
+import com.salah.inventoryservice.dto.CreateInventoryRequestDto;
+import com.salah.inventoryservice.dto.SeatAssignmentRequestDto;
 import com.salah.inventoryservice.model.Inventory;
 import com.salah.inventoryservice.model.Seat;
 import com.salah.inventoryservice.repository.InventoryRepository;
 import com.salah.inventoryservice.repository.SeatRepository;
-import feign.FeignException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
-/**
- * Service pour gérer l'inventaire des sièges d'un vol donné.
- * Gère la création, la récupération, et la réservation/libération des sièges.
- */
 @Service
 public class InventoryService {
 
     @Autowired
-    private InventoryRepository inventoryRepository;
-
+    private  InventoryRepository inventoryRepository;
     @Autowired
-    private SeatRepository seatRepository;
+    private  SeatRepository seatRepository;
 
-    @Autowired
-    private SeatService seatService;
-    @Autowired
-    private FlightClient flightClient;
-    /**
-     * Crée un nouvel inventaire pour un vol donné avec le nombre total de sièges.
-     *
-     * @param request DTO contenant flightId et le nombre total de sièges
-     * @return L'inventaire sauvegardé
-     */
 
-    public Inventory createInventory(InventoryRequestDto request) {
-        // Vérifier que le flightId existe
-        try {
-            FlightDto flight = flightClient.getFlightById(request.getFlightId());
-            if (flight == null) {
-                throw new IllegalArgumentException("Flight not found in FlightService");
-            }
-        } catch (FeignException.NotFound e) {
-            throw new IllegalArgumentException("Flight not found in FlightService");
-        }
 
-        Inventory inventory = new Inventory();
-        inventory.setFlightId(request.getFlightId());
-        inventory.setNbrOfAvailableSeats(request.getTotalSeats());
 
-        Inventory savedInventory = inventoryRepository.save(inventory);
-        List<Seat> seats = seatService.generateSeats(savedInventory.getInventoryId(), request.getTotalSeats());
-        seatRepository.saveAll(seats);
+    @Transactional
+    public Inventory createInventory(CreateInventoryRequestDto request) {
+        Inventory inventory = new Inventory(request.getFlightId(), request.getTotalSeats());
 
-        return savedInventory;
+        // 1. Générer les sièges AVANT toute sauvegarde
+        List<Seat> seats = generateSeats(inventory, request.getTotalSeats());
+
+        // 2. Lier les sièges à l'inventaire (inversement aussi)
+        inventory.setSeats(seats);
+
+        // 3. Enregistrer l’inventaire (cascade va enregistrer les seats automatiquement si configuré)
+        return inventoryRepository.save(inventory);
     }
 
 
 
-    /**
-     * Récupère tous les inventaires.
-     *
-     * @return Liste des inventaires existants
-     */
-    public List<Inventory> getAllInventory() {
+    public List<Inventory> getAllInventories() {
         return inventoryRepository.findAll();
     }
 
-    /**
-     * Récupère le nombre de sièges disponibles pour un vol donné.
-     *
-     * @param flightId Identifiant du vol
-     * @return Nombre de sièges disponibles, ou 0 si non trouvé
-     */
-    public Integer getAvailableSeats(Long flightId) {
-        return inventoryRepository.findByFlightId(flightId)
-                .map(Inventory::getNbrOfAvailableSeats)
-                .orElse(0);
+    public List<String> getAvailableSeats(Long flightId) {
+        return seatRepository.findByInventory_FlightIdAndIsAvailableTrue(flightId)
+                .stream().map(Seat::getSeatNumber).collect(Collectors.toList());
     }
 
-    /**
-     * Vérifie si un nombre de sièges demandé est disponible pour un vol donné.
-     *
-     * @param flightId       Identifiant du vol
-     * @param flightDate     (Supprimé du modèle, à retirer si non utilisé)
-     * @param seatsRequested Nombre de sièges demandés
-     * @return true si disponible, false sinon
-     */
-    public boolean checkAvailability(Long flightId, int seatsRequested) {
-        return inventoryRepository.findByFlightId(flightId)
-                .map(inventory -> inventory.getNbrOfAvailableSeats() >= seatsRequested)
-                .orElse(false);
+    public void assignSeatToPassenger(SeatAssignmentRequestDto request) {
+        Seat seat = seatRepository.findBySeatNumberAndInventory_FlightId(request.getSeatNumber(), request.getFlightId())
+                .orElseThrow(() -> new RuntimeException("Seat not found"));
+
+        if (!seat.isAvailable()) {
+            throw new IllegalStateException("Seat already assigned.");
+        }
+
+        seat.setAvailable(false);
+        seat.setPassengerId(request.getPassengerId());
+        seatRepository.save(seat);
     }
 
-    /**
-     * Réserve un nombre de sièges pour un vol donné, si disponible.
-     *
-     * @param flightId       Identifiant du vol
-     * @param seatsRequested Nombre de sièges demandés
-     * @return true si la réservation est réussie, false sinon
-     */
-    public boolean reserveSeats(Long flightId, int seatsRequested) {
-        Optional<Inventory> inventoryOpt = inventoryRepository.findByFlightId(flightId);
+    private List<Seat> generateSeats(Inventory inventory, int totalSeats) {
+        List<Seat> seats = new ArrayList<>();
+        int rows = totalSeats / 6;
+        char[] columns = {'A', 'B', 'C', 'D', 'E', 'F'};
 
-        if (inventoryOpt.isPresent()) {
-            Inventory inventory = inventoryOpt.get();
-            if (inventory.reserveSeats(seatsRequested)) {
-                inventoryRepository.save(inventory);
-                return true;
+        for (int row = 1; row <= rows; row++) {
+            for (char col : columns) {
+                if (seats.size() >= totalSeats) break;
+                seats.add(Seat.builder()
+                        .seatNumber(row + "" + col)
+                        .inventory(inventory)
+                        .isAvailable(true)
+                        .build());
             }
         }
-        return false;
+        return seats;
     }
 
-    /**
-     * Libère un nombre de sièges précédemment réservés.
-     *
-     * @param flightId Identifiant du vol
-     * @param seats    Nombre de sièges à libérer
-     */
-    public void releaseSeats(Long flightId, int seats) {
-        inventoryRepository.findByFlightId(flightId).ifPresent(inventory -> {
-            inventory.releaseSeats(seats);
-            inventoryRepository.save(inventory);
-        });
+    public boolean isSeatAvailable(Long flightId, int seatsRequested) {
+        Inventory inventory = inventoryRepository.findByFlightId(flightId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Inventory not found"));
+
+        return inventory.getNbrOfAvailableSeats() >= seatsRequested;
     }
+
+    public void reserveSeats(Long flightId, int seatsRequested) {
+        Inventory inventory = inventoryRepository.findByFlightId(flightId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Inventory not found"));
+
+        if (inventory.getNbrOfAvailableSeats() < seatsRequested) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not enough seats available");
+        }
+
+        inventory.setNbrOfAvailableSeats(inventory.getNbrOfAvailableSeats() - seatsRequested);
+        inventoryRepository.save(inventory);
+    }
+
 }

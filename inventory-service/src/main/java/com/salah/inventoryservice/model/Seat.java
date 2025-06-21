@@ -1,5 +1,6 @@
 package com.salah.inventoryservice.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.salah.inventoryservice.model.enums.SeatClass;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,9 +11,7 @@ import lombok.NoArgsConstructor;
 
 //use Seat in CheckIn
 @Entity
-@Table(name = "seats", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"inventoryId", "seatNumber"})
-})
+@Table(name = "seats")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,17 +22,14 @@ public class Seat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long inventoryId;  // Référence simple
-
-    @Column(nullable = false)
     private String seatNumber;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private SeatClass seatClass;
+    private boolean isAvailable = true;
 
-    @Column(nullable = false)
-    private boolean reserved = false;
+    private Long passengerId; // Nullable
 
-
+    @ManyToOne
+    @JoinColumn(name = "inventory_id")
+    @JsonBackReference
+    private Inventory inventory;
 }

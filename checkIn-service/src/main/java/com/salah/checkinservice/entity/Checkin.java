@@ -23,10 +23,15 @@ public class Checkin {
     private UUID id;
 
     private UUID bookingId;
+
+    private Long passengerId;
     private String seatNumber;
+
     private UUID boardingPassNumber;
+
     private LocalDateTime checkinTime;
 
     private String firstName;
+
     private String lastName;
 }

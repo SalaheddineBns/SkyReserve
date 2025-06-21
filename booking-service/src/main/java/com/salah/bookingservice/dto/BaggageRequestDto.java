@@ -10,6 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class BaggageRequestDto {
     private UUID bookingId;
+    private Long passengerId;
     private BaggageType type;
     private Double weight;
     private Double price;

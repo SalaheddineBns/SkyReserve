@@ -14,8 +14,8 @@ public interface BaggageClient {
     @GetMapping("/api/baggages/validate/{bookingId}")
     boolean validateBaggage(@PathVariable UUID bookingId);
 
-    @PostMapping("/api/baggages/checkin/{bookingId}")
-    void checkinBaggage(@PathVariable UUID bookingId,
+    @PostMapping("/api/baggages/checkin")
+    void checkinBaggage(
                         @RequestBody BaggageCheckinRequestDto request);
 
 }

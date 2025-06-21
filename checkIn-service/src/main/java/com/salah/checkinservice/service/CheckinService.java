@@ -11,9 +11,9 @@ public interface CheckinService {
 
     List<String> getAvailableSeats(Long flightId);
 
-    CheckinResponseDto performRandomCheckin(UUID bookingId);
+    //CheckinResponseDto performRandomCheckin(UUID bookingId);
 
-    CheckinResponseDto performCheckin(UUID bookingId, String seatNumber, String firstName, String lastName);
+    CheckinResponseDto performCheckin(UUID bookingId, String seatNumber, Long passengerId);
 
     List<CheckinResponseDto> getCheckinsByBookingId(UUID bookingId);
 

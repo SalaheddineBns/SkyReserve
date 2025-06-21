@@ -4,18 +4,13 @@ import com.salah.bookingservice.dto.SeatReleaseRequestDto;
 import com.salah.bookingservice.dto.SeatReservationRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 
 @FeignClient(name = "inventory-service")
 public interface InventoryClient {
 
-    @GetMapping("/api/inventory/check")
-    boolean checkAvailability(  @RequestParam Long flightId,
-                                @RequestParam int seatsRequested);
+
 
     @PostMapping("/api/inventory/reserve")
     ResponseEntity<String> reserveSeats(@RequestBody SeatReservationRequestDto request);
@@ -24,6 +19,12 @@ public interface InventoryClient {
     Integer getAvailableSeats(
             @RequestParam("flightId") Long flightId
     );
+
+    @GetMapping("/api/inventory/check-availability")
+    Boolean checkAvailability(@RequestParam("flightId") Long flightId,
+                              @RequestParam("seatsRequested") int seatsRequested);
+
+
 
     @PostMapping("/api/inventory/release")
     ResponseEntity<String> releaseSeats(@RequestBody SeatReleaseRequestDto request);

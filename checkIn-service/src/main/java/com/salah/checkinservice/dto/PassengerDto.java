@@ -8,6 +8,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PassengerDto {
+    private Long passengerId;
     private String firstName;
     private String lastName;
     List<BaggageOption> baggageOptions;

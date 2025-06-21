@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Data
 public class BaggageResponseDto {
-    private Long id;
+    private UUID id;
     private UUID bookingId;
     private String type;
     private Double weight;

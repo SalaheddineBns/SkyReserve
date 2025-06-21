@@ -1,5 +1,6 @@
 package com.salah.baggageservice.service;
 
+import com.salah.baggageservice.dto.BaggageCheckinRequestDto;
 import com.salah.baggageservice.dto.BaggageRequestDto;
 import com.salah.baggageservice.dto.BaggageResponseDto;
 import com.salah.baggageservice.mapper.BaggageMapper;
@@ -43,9 +44,11 @@ public class BaggageService {
                 .weight(type.getMaxWeight())
                 .price(type.getPrice())
                 .status(BaggageStatus.RESERVED)
+                .passengerId(requestDto.getPassengerId())
                 .build();
 
         Baggage saved = baggageRepository.save(baggage);
+        System.out.println("************** "+saved.toString());
         return baggageMapper.toDto(saved);
     }
 
@@ -55,8 +58,8 @@ public class BaggageService {
                 .collect(Collectors.toList());
     }
 
-    public BaggageResponseDto checkInBaggage(Long baggageId) {
-        Baggage baggage = baggageRepository.findById(baggageId)
+    public BaggageResponseDto checkInBaggage( BaggageCheckinRequestDto baggageCheckinRequestDto) {
+        Baggage baggage = baggageRepository.findById(baggageCheckinRequestDto.getBookingId())
                 .orElseThrow(() -> new IllegalArgumentException("Baggage not found"));
         baggage.setStatus(BaggageStatus.CHECKED_IN);
         Baggage updated = baggageRepository.save(baggage);

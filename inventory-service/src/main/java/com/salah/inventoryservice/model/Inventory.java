@@ -1,8 +1,12 @@
 package com.salah.inventoryservice.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Représente l'inventaire des sièges disponibles pour un vol donné.
@@ -26,6 +30,10 @@ public class Inventory {
     private Long flightId;
 
     private int nbrOfAvailableSeats;
+    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Seat> seats = new ArrayList<>();
+
 
     public Inventory(Long flightId, int totalSeats) {
         this.flightId = flightId;

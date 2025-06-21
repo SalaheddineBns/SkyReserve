@@ -1,6 +1,7 @@
 package com.salah.baggageservice.controller;
 
 import com.salah.baggageservice.BaggageServiceApplication;
+import com.salah.baggageservice.dto.BaggageCheckinRequestDto;
 import com.salah.baggageservice.dto.BaggageRequestDto;
 import com.salah.baggageservice.dto.BaggageResponseDto;
 import com.salah.baggageservice.service.BaggageService;
@@ -26,6 +27,7 @@ public class BaggageController {
 
     @PostMapping("/reserve")
     public ResponseEntity<BaggageResponseDto> reserveBaggage(@RequestBody BaggageRequestDto requestDto) {
+        System.out.println(requestDto.toString());
         BaggageResponseDto response = baggageService.reserveBaggage(requestDto);
         return ResponseEntity.ok(response);
     }
@@ -36,9 +38,9 @@ public class BaggageController {
         return ResponseEntity.ok(baggages);
     }
 
-    @PostMapping("/{baggageId}/checkin")
-    public ResponseEntity<BaggageResponseDto> checkInBaggage(@PathVariable Long baggageId) {
-        BaggageResponseDto checkedIn = baggageService.checkInBaggage(baggageId);
+    @PostMapping("checkin")
+    public ResponseEntity<BaggageResponseDto> checkInBaggage(@RequestBody BaggageCheckinRequestDto baggageCheckinRequestDto) {
+        BaggageResponseDto checkedIn = baggageService.checkInBaggage(baggageCheckinRequestDto);
         return ResponseEntity.ok(checkedIn);
     }
 }

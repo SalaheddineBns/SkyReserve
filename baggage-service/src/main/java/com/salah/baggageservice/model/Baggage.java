@@ -16,10 +16,12 @@ import java.util.UUID;
 public class Baggage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
 
     private UUID bookingId;
+
+    private Long passengerId;
 
     @Enumerated(EnumType.STRING)
     private BaggageType type;
@@ -29,5 +31,5 @@ public class Baggage {
     private Double price;
 
     @Enumerated(EnumType.STRING)
-    private BaggageStatus status;  // e.g. RESERVED, CHECKED_IN, etc.
+    private BaggageStatus status;
 }

@@ -1,97 +1,61 @@
 package com.salah.inventoryservice.controller;
 
-import com.salah.inventoryservice.dto.InventoryRequestDto;
-import com.salah.inventoryservice.dto.SeatReleaseRequestDto;
-import com.salah.inventoryservice.dto.SeatReservationRequestDto;
+import com.salah.inventoryservice.dto.*;
 import com.salah.inventoryservice.model.Inventory;
+import com.salah.inventoryservice.model.Seat;
+import com.salah.inventoryservice.repository.InventoryRepository;
+import com.salah.inventoryservice.repository.SeatRepository;
 import com.salah.inventoryservice.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-
-/**
- * Contrôleur REST pour gérer l'inventaire des sièges d'un vol.
- */
 @RestController
 @RequestMapping("/api/inventory")
+
 public class InventoryController {
 
     @Autowired
     private InventoryService inventoryService;
 
-    /**
-     * Crée un nouvel inventaire pour un vol donné.
-     *
-     * @param request DTO contenant flightId et totalSeats
-     * @return L'inventaire créé
-     */
     @PostMapping
-    public ResponseEntity<Inventory> createInventory(@RequestBody InventoryRequestDto request) {
-        Inventory created = inventoryService.createInventory(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    public ResponseEntity<Inventory> createInventory(@RequestBody CreateInventoryRequestDto request) {
+        return ResponseEntity.ok(inventoryService.createInventory(request));
     }
 
-    /**
-     * Récupère tous les inventaires existants.
-     *
-     * @return Liste des inventaires
-     */
     @GetMapping
-    public ResponseEntity<List<Inventory>> getAllInventory() {
-        return ResponseEntity.ok(inventoryService.getAllInventory());
+    public ResponseEntity<List<Inventory>> getAllInventories() {
+        return ResponseEntity.ok(inventoryService.getAllInventories());
     }
 
-    /**
-     * Vérifie si un nombre de sièges demandé est disponible pour un vol donné.
-     *
-     * @param flightId       Identifiant du vol
-     * @param seatsRequested Nombre de sièges demandés
-     * @return true si disponible, false sinon
-     */
-    @GetMapping("/check")
-    public ResponseEntity<Boolean> checkAvailability(
-            @RequestParam Long flightId,
-            @RequestParam int seatsRequested
-    ) {
-        boolean available = inventoryService.checkAvailability(flightId, seatsRequested);
+
+    @GetMapping("/check-availability")
+    public ResponseEntity<Boolean> checkAvailability(@RequestParam Long flightId, @RequestParam int seatsRequested) {
+        boolean available = inventoryService.isSeatAvailable(flightId, seatsRequested);
         return ResponseEntity.ok(available);
     }
 
-    /**
-     * Récupère le nombre de sièges disponibles pour un vol donné.
-     *
-     * @param flightId Identifiant du vol
-     * @return Nombre de sièges disponibles
-     */
-    @GetMapping("/seats/{flightId}")
-    public ResponseEntity<Integer> getAvailableSeats(
-            @PathVariable Long flightId
-    ) {
-        Integer availableSeats = inventoryService.getAvailableSeats(flightId);
-        return ResponseEntity.ok(availableSeats);
-    }
-
-
     @PostMapping("/reserve")
-    public ResponseEntity<String> reserveSeats(
-            @RequestBody SeatReservationRequestDto request
-
-    ) {
-        boolean reserved = inventoryService.reserveSeats(request.flightId(), request.seats());
-        return reserved ?
-                ResponseEntity.ok("Seats reserved") :
-                ResponseEntity.badRequest().body("Not enough seats available");
+    public ResponseEntity<Void> reserveSeats(@RequestBody SeatReservationRequestDto request) {
+        inventoryService.reserveSeats(request.flightId(), request.seats());
+        return ResponseEntity.ok().build();
     }
 
 
-    @PostMapping("/release")
-    public ResponseEntity<String> releaseSeats(
-            @RequestBody SeatReleaseRequestDto request
-            ) {
-        inventoryService.releaseSeats(request.flightId(), request.seats());
-        return ResponseEntity.ok("Seats released");
+
+    @GetMapping("/seats-number/{flightId}")
+    public ResponseEntity<List<String>> getAvailableSeats(@PathVariable Long flightId) {
+        return ResponseEntity.ok(inventoryService.getAvailableSeats(flightId));
     }
+
+    @PutMapping("/seats/assign")
+    public ResponseEntity<Void> assignSeatToPassenger(@RequestBody SeatAssignmentRequestDto request) {
+        inventoryService.assignSeatToPassenger(request);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

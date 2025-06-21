@@ -8,8 +8,9 @@ import java.util.UUID;
 
 @Data
 public class BaggageResponseDto {
-    private Long id;
+    private UUID id;
     private UUID bookingId;
+    private Long passengerId;
     private BaggageType type;
     private Double weight;
     private Double price;

@@ -18,13 +18,14 @@ public class CheckinController {
 
     @PostMapping("/random")
     public ResponseEntity<CheckinResponseDto> checkinRandom(@RequestBody CheckinRequestDto dto) {
-        return ResponseEntity.ok(checkinService.performCheckin(dto.getBookingId(), null, dto.getFirstName(), dto.getLastName()));
+        return ResponseEntity.ok(checkinService.performCheckin(dto.getBookingId(), null, dto.getPassengerId()));
     }
 
     @PostMapping
     public ResponseEntity<CheckinResponseDto> checkinWithSeat(@RequestBody CheckinRequestDto dto) {
-        return ResponseEntity.ok(checkinService.performCheckin(dto.getBookingId(), dto.getSeatNumber(), dto.getFirstName(), dto.getLastName()));
+        return ResponseEntity.ok(checkinService.performCheckin(dto.getBookingId(), dto.getSeatNumber(),dto.getPassengerId()));
     }
+
 
     @GetMapping("/available-seats/{flightId}")
     public ResponseEntity<List<String>> getAvailableSeats(@PathVariable Long flightId) {
@@ -35,6 +36,7 @@ public class CheckinController {
     public ResponseEntity<List<CheckinResponseDto>> getCheckins(@PathVariable UUID bookingId) {
         return ResponseEntity.ok(checkinService.getCheckinsByBookingId(bookingId));
     }
+
 
     @GetMapping("/{bookingId}/passengers")
     public ResponseEntity<List<PassengerDto>> getPassengers(@PathVariable UUID bookingId) {
