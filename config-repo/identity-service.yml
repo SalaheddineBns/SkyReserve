@@ -1,0 +1,27 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: identity-service
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+jwt:
+  secret: "xzUJZImXQvFJIrrVTa7wKF1mt9c3pnv0O4gx4YOrZtxuCEs2CwTWEL3nTJSZrjDQGLblkeGGVIKbeaaXd03II4Ejo2gKVJDk7SIn"
+  expiration: 3600000  # 1 heure en millisecondes
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
