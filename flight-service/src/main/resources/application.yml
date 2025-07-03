@@ -1,31 +1,10 @@
 spring:
   application:
     name: flight-service
-  datasource:
-    url: jdbc:h2:mem:mydb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ""
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always  # 👈 force l'exécution de data.sql
-  h2:
-    console:
-      enabled: true
 
-server:
-  port: 8081
+  config:
+    import: "configserver:"
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-    register-with-eureka: true
-    fetch-registry: true
-
-  instance:
-    prefer-ip-address: true
-    instance-id: ${spring.application.name}:${server.port}
+  cloud:
+    config:
+      uri: http://localhost:8888

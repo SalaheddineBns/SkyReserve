@@ -1,6 +1,10 @@
 spring:
     application:
         name: aircraft-service
+
+    config:
+        import: "configserver:"  # ✅ chaîne de caractères valide
+
     cloud:
         config:
             uri: http://localhost:8888

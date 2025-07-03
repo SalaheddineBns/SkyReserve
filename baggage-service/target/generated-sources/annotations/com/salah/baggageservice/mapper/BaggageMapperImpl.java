@@ -8,22 +8,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-06-15T18:30:37+0200",
+    date = "2025-07-03T14:17:25+0200",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)"
 )
 @Component
 public class BaggageMapperImpl implements BaggageMapper {
-
-    @Override
-    public Baggage toEntity(BaggageRequestDto requestDto) {
-        if ( requestDto == null ) {
-            return null;
-        }
-
-        Baggage baggage = new Baggage();
-
-        return baggage;
-    }
 
     @Override
     public BaggageResponseDto toDto(Baggage baggage) {
@@ -33,6 +22,31 @@ public class BaggageMapperImpl implements BaggageMapper {
 
         BaggageResponseDto baggageResponseDto = new BaggageResponseDto();
 
+        baggageResponseDto.setBookingId( baggage.getBookingId() );
+        baggageResponseDto.setPassengerId( baggage.getPassengerId() );
+        baggageResponseDto.setType( baggage.getType() );
+        baggageResponseDto.setWeight( baggage.getWeight() );
+        baggageResponseDto.setPrice( baggage.getPrice() );
+        baggageResponseDto.setStatus( baggage.getStatus() );
+        baggageResponseDto.setId( baggage.getId() );
+
         return baggageResponseDto;
+    }
+
+    @Override
+    public Baggage toEntity(BaggageRequestDto dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        Baggage.BaggageBuilder baggage = Baggage.builder();
+
+        baggage.bookingId( dto.getBookingId() );
+        baggage.passengerId( dto.getPassengerId() );
+        baggage.type( dto.getType() );
+        baggage.weight( dto.getWeight() );
+        baggage.price( dto.getPrice() );
+
+        return baggage.build();
     }
 }

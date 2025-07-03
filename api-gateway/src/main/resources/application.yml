@@ -1,87 +1,10 @@
 spring:
   application:
     name: api-gateway
+
+  config:
+    import: "configserver:"  # ✅ guillemets obligatoires
+
   cloud:
-    gateway:
-      routes:
-        - id: flight-service
-          uri: http://localhost:8081
-          predicates:
-            - Path=/flights/**
-
-
-        - id: inventory-service
-          uri: http://localhost:8082
-          predicates:
-            - Path=/api/inventory/**
-
-        - id: booking-service
-          uri: http://localhost:8083
-          predicates:
-            - Path=/api/bookings/**
-
-        - id: checkin-service
-          uri: http://localhost:8084
-          predicates:
-            - Path=/api/checkin/**
-
-        - id: payment-service
-          uri: http://localhost:8085
-          predicates:
-            - Path=/api/payments/**
-
-        - id: baggage-service
-          uri: http://localhost:8086
-          predicates:
-            - Path=/api/baggage/**
-
-        - id: aircraft-service
-          uri: http://localhost:8087
-          predicates:
-            - Path=/api/aircraft/**
-
-        - id: notification-service
-          uri: http://localhost:8088
-          predicates:
-            - Path=/api/notification/**
-
-        - id: accounting-service
-          uri: http://localhost:8089
-          predicates:
-            - Path=/api/accounting/**
-
-        - id: identity-service
-          uri: http://localhost:8090
-          predicates:
-            - Path=/api/auth/**
-
-        - id: service-registry
-          uri: http://localhost:8761
-          predicates:
-            - Path=/eureka/**
-
-        - id: config-server
-          uri: http://localhost:8888
-          predicates:
-            - Path=/config/**
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins: "http://localhost:5173"
-            allowedMethods: "*"
-            allowedHeaders: "*"
-            allowCredentials: true
-
-server:
-  port: 8080
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-    register-with-eureka: true
-    fetch-registry: true
-
-  instance:
-    prefer-ip-address: true
-    instance-id: ${spring.application.name}:${server.port}
+    config:
+      uri: http://localhost:8888

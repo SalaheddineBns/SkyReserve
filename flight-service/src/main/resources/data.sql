@@ -1,6 +1,6 @@
 INSERT INTO flight (flight_number, origin, destination, departure_time, arrival_time, price, aircraft_id) VALUES
                                                                                                               -- Paris -> diverses destinations
-                                                                                                              ('AF123', 'Paris', 'New York', '2025-06-22T10:00:00', '2025-06-01T13:00:00', 750.00, 1),
+                                                                                                              ('AF123', 'Paris', 'New York', '2025-07-03T10:00:00', '2025-07-03T13:00:00', 750.00, 1),
                                                                                                               ('AF125', 'Paris', 'Brussels', '2025-06-22T10:00:00', '2025-06-01T11:15:00', 350.00, 1),
                                                                                                               ('AF126', 'Paris', 'Madrid', '2025-06-02T12:00:00', '2025-06-02T14:00:00', 400.00, 1),
                                                                                                               ('AF127', 'Paris', 'Rome', '2025-06-02T15:00:00', '2025-06-02T17:30:00', 450.00, 1),

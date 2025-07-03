@@ -31,6 +31,13 @@ public class InventoryController {
         return ResponseEntity.ok(inventoryService.getAllInventories());
     }
 
+    @GetMapping("/available-seats")
+    public ResponseEntity<Integer> getAvailableSeatsCount(@RequestParam("flightId") Long flightId) {
+        List<String> availableSeats = inventoryService.getAvailableSeats(flightId);
+        return ResponseEntity.ok(availableSeats != null ? availableSeats.size() : 0);
+    }
+
+
 
     @GetMapping("/check-availability")
     public ResponseEntity<Boolean> checkAvailability(@RequestParam Long flightId, @RequestParam int seatsRequested) {
