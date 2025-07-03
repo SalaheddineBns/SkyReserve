@@ -69,7 +69,7 @@ public class FlightService {
                             .arrivalTime(flight.getArrivalTime().toLocalTime())
                             .price(flight.getPrice())
                             .availableSeats(availableSeats)
-                            .aircraft(aircraft)
+                            .aircraftId(flight.getAircraftId())
                             .build();
                 })
                 .filter(Objects::nonNull)

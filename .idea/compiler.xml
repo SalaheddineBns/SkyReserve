@@ -54,7 +54,7 @@
         </processorPath>
         <module name="notification-service" />
       </profile>
-      <profile name="Annotation profile for PaymentService" enabled="true">
+      <profile name="Annotation profile for flight-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -64,8 +64,8 @@
         <module name="aircraft-service" />
         <module name="inventory-service" />
         <module name="payment-service" />
-        <module name="PaymentService" />
         <module name="flight-service" />
+        <module name="PaymentService" />
       </profile>
     </annotationProcessing>
   </component>

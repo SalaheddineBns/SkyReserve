@@ -22,5 +22,5 @@ public class FlightResponseDto {
     private LocalTime arrivalTime;   // 🕒 Heure d'arrivée
     private Double price;
     private Integer availableSeats;
-    private AircraftDto aircraft;
+    private Long aircraftId;
 }
