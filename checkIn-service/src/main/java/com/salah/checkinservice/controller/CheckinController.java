@@ -26,6 +26,10 @@ public class CheckinController {
         return ResponseEntity.ok(checkinService.performCheckin(dto.getBookingId(), dto.getSeatNumber(),dto.getPassengerId()));
     }
 
+    @GetMapping
+    public List<CheckinResponseDto> getAllCheckins() {
+        return checkinService.getAllCheckins();
+    }
 
     @GetMapping("/available-seats/{flightId}")
     public ResponseEntity<List<String>> getAvailableSeats(@PathVariable Long flightId) {

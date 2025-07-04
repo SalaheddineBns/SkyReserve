@@ -1,5 +1,6 @@
 package com.salah.baggageservice.dto;
 
+import com.salah.baggageservice.model.Baggage;
 import com.salah.baggageservice.model.enums.BaggageStatus;
 import com.salah.baggageservice.model.enums.BaggageType;
 import lombok.Data;
@@ -15,4 +16,6 @@ public class BaggageResponseDto {
     private Double weight;
     private Double price;
     private BaggageStatus status;
+
+
 }

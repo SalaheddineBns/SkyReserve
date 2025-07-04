@@ -164,4 +164,12 @@ public class CheckinServiceImpl implements CheckinService {
     }
 
 
+    public List<CheckinResponseDto> getAllCheckins() {
+        return checkinRepository.findAll()
+                .stream()
+                .map(CheckinResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+
 }

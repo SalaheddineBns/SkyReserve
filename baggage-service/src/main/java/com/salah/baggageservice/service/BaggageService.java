@@ -65,4 +65,6 @@ public class BaggageService {
         Baggage updated = baggageRepository.save(baggage);
         return baggageMapper.toDto(updated);
     }
+
+
 }

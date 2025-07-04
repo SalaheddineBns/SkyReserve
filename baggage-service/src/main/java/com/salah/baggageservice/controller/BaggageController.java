@@ -43,4 +43,7 @@ public class BaggageController {
         BaggageResponseDto checkedIn = baggageService.checkInBaggage(baggageCheckinRequestDto);
         return ResponseEntity.ok(checkedIn);
     }
+
+
+
 }

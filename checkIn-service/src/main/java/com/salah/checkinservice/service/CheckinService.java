@@ -13,6 +13,7 @@ public interface CheckinService {
 
     //CheckinResponseDto performRandomCheckin(UUID bookingId);
 
+
     CheckinResponseDto performCheckin(UUID bookingId, String seatNumber, Long passengerId);
 
     List<CheckinResponseDto> getCheckinsByBookingId(UUID bookingId);
@@ -20,5 +21,6 @@ public interface CheckinService {
     BookingDto getBookingDetails(UUID bookingId);
 
     BoardingPassDto generateBoardingPass(UUID boardingPassNumber);
+    List<CheckinResponseDto> getAllCheckins(); // ✅ Signature ajoutée
 
 }
