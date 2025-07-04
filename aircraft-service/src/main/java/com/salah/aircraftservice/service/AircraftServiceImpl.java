@@ -27,7 +27,6 @@ public class AircraftServiceImpl implements AircraftService {
         Aircraft entity = AircraftMapper.toEntity(dto);
 
         List<String> seatLayout = generateSeatLayout(dto.getNumberOfRows(), dto.getSeatPerRow());
-        entity.setSeatLayout(seatLayout);
         entity.setCapacity(seatLayout.size());
 
         Aircraft saved = repository.save(entity);
@@ -68,11 +67,8 @@ public class AircraftServiceImpl implements AircraftService {
         existing.setType(dto.getType());
         existing.setAirline(dto.getAirline());
         existing.setStatus(dto.getStatus());
-        existing.setNumberOfRows(dto.getNumberOfRows());
-        existing.setSeatPerRow(dto.getSeatPerRow());
 
         List<String> seatLayout = generateSeatLayout(dto.getNumberOfRows(), dto.getSeatPerRow());
-        existing.setSeatLayout(seatLayout);
         existing.setCapacity(seatLayout.size());
 
         Aircraft saved = repository.save(existing);
@@ -89,6 +85,11 @@ public class AircraftServiceImpl implements AircraftService {
         seatClassRowsMap.remove(id);
     }
 
+    @Override
+    public List<Aircraft> findByAirline(String airline) {
+        return repository.findByAirline(airline);
+    }
+
     private List<String> generateSeatLayout(int numberOfRows, String seatPerRow) {
         List<String> seatLayout = new ArrayList<>();
         for (int row = 1; row <= numberOfRows; row++) {
@@ -98,4 +99,7 @@ public class AircraftServiceImpl implements AircraftService {
         }
         return seatLayout;
     }
+
+
+
 }

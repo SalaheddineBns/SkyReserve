@@ -4,9 +4,11 @@ import com.salah.identityservice.dto.LoginRequestDto;
 import com.salah.identityservice.dto.LoginResponseDto;
 import com.salah.identityservice.dto.RegisterRequestDto;
 import com.salah.identityservice.dto.RegisterResponseDto;
+import com.salah.identityservice.model.Role;
 import com.salah.identityservice.model.User;
 import com.salah.identityservice.repository.UserRepository;
 import com.salah.identityservice.security.JwtUtil;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +30,24 @@ public class AuthService {
     private JwtUtil jwtUtil;
     @Autowired
     private  AuthenticationManager authenticationManager;
+
+
+    @PostConstruct
+    public void initAdminAccount() {
+        String adminEmail = "admin@gmail.com";
+
+        if (userRepository.findByEmail(adminEmail).isEmpty()) {
+            User admin = new User();
+            admin.setEmail(adminEmail);
+            admin.setPassword(passwordEncoder.encode("admin"));
+            admin.setRole(Role.ADMIN); // ou "ADMIN" selon ton enum ou String
+            userRepository.save(admin);
+
+            System.out.println("✅ Admin account created: admin@gmail.com / admin");
+        } else {
+            System.out.println("ℹ️ Admin account already exists.");
+        }
+    }
 
     public RegisterResponseDto register(RegisterRequestDto request) {
         if (userRepository.findByEmail(request.email()).isPresent()) {

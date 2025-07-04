@@ -1,4 +1,6 @@
 package com.salah.identityservice.dto;
 
 
-public record RegisterResponseDto(Long id, String email, String role) {}
+import com.salah.identityservice.model.Role;
+
+public record RegisterResponseDto(Long id, String email, Role role) {}

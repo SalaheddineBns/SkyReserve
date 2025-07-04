@@ -2,6 +2,7 @@ package com.salah.aircraftservice.service;
 
 import com.salah.aircraftservice.dto.AircraftRequestDTO;
 import com.salah.aircraftservice.dto.AircraftResponseDTO;
+import com.salah.aircraftservice.model.Aircraft;
 
 import java.util.List;
 
@@ -11,4 +12,5 @@ public interface AircraftService {
     AircraftResponseDTO getById(Long id);
     AircraftResponseDTO updateAircraft(Long id, AircraftRequestDTO updatedAircraft);
     void delete(Long id);
+    List<Aircraft> findByAirline(String airline);
 }

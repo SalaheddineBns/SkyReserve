@@ -8,18 +8,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig {
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173") // autorise ton frontend
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true); // si tu as des cookies/token à envoyer
-            }
-        };
-    }
+//
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**")
+//                        .allowedOrigins("http://localhost:5173") // autorise ton frontend
+//                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+//                        .allowedHeaders("*")
+//                        .allowCredentials(true); // si tu as des cookies/token à envoyer
+//            }
+//        };
+//    }
 }

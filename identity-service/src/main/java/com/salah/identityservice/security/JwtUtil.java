@@ -1,5 +1,6 @@
 package com.salah.identityservice.security;
 
+import com.salah.identityservice.model.Role;
 import com.salah.identityservice.model.User;
 import com.salah.identityservice.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
@@ -22,7 +23,7 @@ public class JwtUtil {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String role = user.getRole(); // Ex: "ADMIN" ou "USER"
+        Role role = user.getRole(); // Ex: "ADMIN" ou "USER"
 
         return Jwts.builder()
                 .setSubject(email)

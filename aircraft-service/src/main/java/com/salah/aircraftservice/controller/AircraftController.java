@@ -2,6 +2,7 @@ package com.salah.aircraftservice.controller;
 
 import com.salah.aircraftservice.dto.AircraftRequestDTO;
 import com.salah.aircraftservice.dto.AircraftResponseDTO;
+import com.salah.aircraftservice.model.Aircraft;
 import com.salah.aircraftservice.service.AircraftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,5 +40,10 @@ public class AircraftController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         aircraftService.delete(id);
+    }
+
+    @GetMapping("/airline/{airline}")
+    public List<Aircraft> getAircraftsByAirline(@PathVariable String airline) {
+        return aircraftService.findByAirline(airline);
     }
 }

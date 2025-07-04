@@ -33,3 +33,5 @@ eureka:
   instance:
     prefer-ip-address: true
     instance-id: ${spring.application.name}:${server.port}
+jwt:
+  secret: "xzUJZImXQvFJIrrVTa7wKF1mt9c3pnv0O4gx4YOrZtxuCEs2CwTWEL3nTJSZrjDQGLblkeGGVIKbeaaXd03II4Ejo2gKVJDk7SIn"

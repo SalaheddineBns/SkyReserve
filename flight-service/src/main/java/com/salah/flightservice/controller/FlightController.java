@@ -5,6 +5,8 @@ import com.salah.flightservice.model.Flight;
 import com.salah.flightservice.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -39,9 +41,17 @@ public class FlightController {
     }
 
     @PostMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public Flight addFlight(@RequestBody Flight flight) {
         return flightService.addFlight(flight);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFlight(@PathVariable Long id) {
+        flightService.deleteFlight(id);
+        return ResponseEntity.noContent().build();
+    }
+
 //
 //    @GetMapping("/{id}")
 //    public String getFlightById() {

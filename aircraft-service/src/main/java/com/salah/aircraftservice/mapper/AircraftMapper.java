@@ -17,8 +17,6 @@ public class AircraftMapper {
                 .type(dto.getType())
                 .airline(dto.getAirline())
                 .status(dto.getStatus())
-                .numberOfRows(dto.getNumberOfRows())
-                .seatPerRow(dto.getSeatPerRow())
                 // seatLayout 会在 save() 自动生成！
                 .build();
     }
@@ -34,9 +32,6 @@ public class AircraftMapper {
                 .capacity(aircraft.getCapacity())
                 .airline(aircraft.getAirline())
                 .status(aircraft.getStatus())
-                .numberOfRows(aircraft.getNumberOfRows())
-                .seatPerRow(aircraft.getSeatPerRow())
-                .seatLayout(aircraft.getSeatLayout())
                 .seatClassRows(seatClassRows) // 必须加这个！
                 .build();
     }
