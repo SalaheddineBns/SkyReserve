@@ -8,9 +8,9 @@ It covers all major processes in a modern airline booking application: flight se
 ## 🧱 Architecture
 SkyReserve follows a microservices architecture and includes the following services:
 
-![img.png](img.png)
+![img_2.png](img_2.png)
 
-![img_3.png](img_3.png)
+![img_1.png](img_1.png)
 
 | Service             | Description                                           | Port  |
 |---------------------|-------------------------------------------------------|-------|
