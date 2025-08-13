@@ -3,6 +3,8 @@
 SkyReserve is a distributed flight booking system developed using **Spring Boot**, **Spring Cloud**, and **Docker**.  
 It covers all major processes in a modern airline booking application: flight search, booking, check-in, baggage, payments, and more.
 
+🔗 **Frontend Repository:** [SkyReserve UI](https://github.com/SalaheddineBns/skyReserveUI/tree/main)  
+
 ---
 
 ## 🧱 Architecture
